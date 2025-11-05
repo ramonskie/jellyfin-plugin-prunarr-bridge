@@ -38,13 +38,13 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// <inheritdoc />
     public IEnumerable<PluginPageInfo> GetPages()
     {
-        return new[]
-        {
+        return
+        [
             new PluginPageInfo
             {
-                Name = this.Name,
-                EmbeddedResourcePath = string.Format("{0}.Configuration.configPage.html", GetType().Namespace)
+                Name = Name,
+                EmbeddedResourcePath = GetType().Namespace + ".Configuration.configPage.html"
             }
-        };
+        ];
     }
 }
