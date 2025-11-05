@@ -5,6 +5,7 @@ using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.PrunarrBridge.Services;
@@ -55,7 +56,7 @@ public class VirtualFolderManager
                     if (!existingFolder.Locations.Contains(path))
                     {
                         _logger.LogInformation("Adding path to Virtual Folder: {Path}", path);
-                        await _libraryManager.AddMediaPath(name, new MediaPathInfo { Path = path });
+                        _libraryManager.AddMediaPath(name, new MediaPathInfo { Path = path });
                     }
                 }
             }
@@ -69,17 +70,29 @@ public class VirtualFolderManager
                     EnablePhotos = false,
                     EnableRealtimeMonitor = true,
                     EnableChapterImageExtraction = false,
-                    EnableInternetProviders = true,
                     SaveLocalMetadata = false
                 };
 
-                await _libraryManager.AddVirtualFolder(name, collectionType, libraryOptions, true);
+                // Map string collection type to CollectionTypeOptions enum
+                CollectionTypeOptions? collectionTypeEnum = collectionType?.ToLowerInvariant() switch
+                {
+                    "movies" => CollectionTypeOptions.Movies,
+                    "tvshows" => CollectionTypeOptions.TvShows,
+                    "music" => CollectionTypeOptions.Music,
+                    "musicvideos" => CollectionTypeOptions.MusicVideos,
+                    "homevideos" => CollectionTypeOptions.HomeVideos,
+                    "photos" => CollectionTypeOptions.Photos,
+                    "books" => CollectionTypeOptions.Books,
+                    _ => null
+                };
+
+                _libraryManager.AddVirtualFolder(name, collectionTypeEnum, libraryOptions, true);
 
                 // Add paths
                 foreach (var path in paths)
                 {
                     _logger.LogInformation("Adding path to Virtual Folder: {Path}", path);
-                    await _libraryManager.AddMediaPath(name, new MediaPathInfo { Path = path });
+                    _libraryManager.AddMediaPath(name, new MediaPathInfo { Path = path });
                 }
             }
 
@@ -97,14 +110,15 @@ public class VirtualFolderManager
     /// </summary>
     /// <param name="name">The name of the Virtual Folder to remove.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task RemoveVirtualFolderAsync(string name)
+    public Task RemoveVirtualFolderAsync(string name)
     {
         _logger.LogInformation("Removing Virtual Folder: {Name}", name);
 
         try
         {
-            await _libraryManager.RemoveVirtualFolder(name, true);
+            _libraryManager.RemoveVirtualFolder(name, true);
             _logger.LogInformation("Virtual Folder removed successfully");
+            return Task.CompletedTask;
         }
         catch (Exception ex)
         {

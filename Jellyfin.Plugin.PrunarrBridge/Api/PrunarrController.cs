@@ -32,11 +32,11 @@ public class PrunarrController : ControllerBase
     /// <param name="libraryManager">The library manager.</param>
     /// <param name="loggerFactory">The logger factory.</param>
     public PrunarrController(
-        ILogger<PrunarrController> _logger,
+        ILogger<PrunarrController> logger,
         ILibraryManager libraryManager,
         ILoggerFactory loggerFactory)
     {
-        this._logger = logger;
+        _logger = logger;
         _symlinkManager = new SymlinkManager(loggerFactory.CreateLogger<SymlinkManager>(), libraryManager);
         _virtualFolderManager = new VirtualFolderManager(loggerFactory.CreateLogger<VirtualFolderManager>(), libraryManager);
     }
