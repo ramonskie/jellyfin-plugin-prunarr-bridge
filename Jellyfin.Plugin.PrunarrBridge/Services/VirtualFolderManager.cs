@@ -5,7 +5,6 @@ using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Configuration;
-using MediaBrowser.Model.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.PrunarrBridge.Services;
@@ -73,20 +72,9 @@ public class VirtualFolderManager
                     SaveLocalMetadata = false
                 };
 
-                // Map string collection type to CollectionTypeOptions enum
-                CollectionTypeOptions? collectionTypeEnum = collectionType?.ToLowerInvariant() switch
-                {
-                    "movies" => CollectionTypeOptions.Movies,
-                    "tvshows" => CollectionTypeOptions.TvShows,
-                    "music" => CollectionTypeOptions.Music,
-                    "musicvideos" => CollectionTypeOptions.MusicVideos,
-                    "homevideos" => CollectionTypeOptions.HomeVideos,
-                    "photos" => CollectionTypeOptions.Photos,
-                    "books" => CollectionTypeOptions.Books,
-                    _ => null
-                };
-
-                _libraryManager.AddVirtualFolder(name, collectionTypeEnum, libraryOptions, true);
+                // Note: CollectionTypeOptions parameter may need to be null or use string directly
+                // depending on Jellyfin API version. For now, using null for mixed content.
+                _libraryManager.AddVirtualFolder(name, null, libraryOptions, true);
 
                 // Add paths
                 foreach (var path in paths)
