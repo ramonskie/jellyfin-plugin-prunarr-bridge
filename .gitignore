@@ -1,0 +1,39 @@
+# Build outputs
+bin/
+obj/
+*.dll
+*.pdb
+*.zip
+*.md5
+*.sha256
+
+# .NET
+*.user
+*.suo
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln.DotSettings.user
+
+# Go build outputs
+jellyfin-sidecar/jellyfin-sidecar
+jellyfin-sidecar/dist/
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Logs
+*.log
+
+# Environment files
+*.env
+config.json
+!config.example.json

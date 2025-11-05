@@ -1,0 +1,95 @@
+name: Build and Release Plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore Jellyfin.Plugin.PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.csproj
+      
+    - name: Build plugin
+      run: dotnet build Jellyfin.Plugin.PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.csproj --configuration Release --no-restore
+      
+    - name: Publish plugin
+      run: dotnet publish Jellyfin.Plugin.PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.csproj --configuration Release --output ./artifacts --no-build
+      
+    - name: Create release package
+      run: |
+        cd artifacts
+        zip -r ../jellyfin-plugin-prunarr-bridge.zip *.dll
+        cd ..
+        
+    - name: Generate checksums
+      run: |
+        md5sum jellyfin-plugin-prunarr-bridge.zip > jellyfin-plugin-prunarr-bridge.zip.md5
+        sha256sum jellyfin-plugin-prunarr-bridge.zip > jellyfin-plugin-prunarr-bridge.zip.sha256
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: plugin-artifacts
+        path: |
+          jellyfin-plugin-prunarr-bridge.zip
+          jellyfin-plugin-prunarr-bridge.zip.md5
+          jellyfin-plugin-prunarr-bridge.zip.sha256
+          
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          jellyfin-plugin-prunarr-bridge.zip
+          jellyfin-plugin-prunarr-bridge.zip.md5
+          jellyfin-plugin-prunarr-bridge.zip.sha256
+        body: |
+          ## Jellyfin Plugin: Prunarr Bridge ${{ github.ref_name }}
+          
+          ### Installation
+          
+          1. In Jellyfin, go to **Dashboard** → **Plugins** → **Repositories**
+          2. Add this repository URL: `https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json`
+          3. Go to **Catalog** and install "Prunarr Bridge"
+          4. Restart Jellyfin
+          5. Configure the plugin in **Dashboard** → **Plugins** → **Prunarr Bridge**
+          
+          ### Manual Installation
+          
+          1. Download `jellyfin-plugin-prunarr-bridge.zip`
+          2. Extract the DLL to your Jellyfin plugins directory
+          3. Restart Jellyfin
+          
+          ### Features
+          
+          - HTTP API endpoints for managing "Leaving Soon" items
+          - Automatic Virtual Folder creation and management
+          - Symlink creation for media files
+          - API key authentication
+          - Support for movies, TV shows, and mixed collections
+          
+          ### API Endpoints
+          
+          - `POST /api/prunarr/leaving-soon/add` - Add items
+          - `POST /api/prunarr/leaving-soon/remove` - Remove items
+          - `POST /api/prunarr/leaving-soon/clear` - Clear all items
+          - `GET /api/prunarr/status` - Get plugin status
+          
+          See the [Installation Guide](https://github.com/${{ github.repository }}/blob/main/INSTALLATION.md) for detailed instructions.
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

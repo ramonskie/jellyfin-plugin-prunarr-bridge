@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Jellyfin media server
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - ./jellyfin-config:/config
+      - ./jellyfin-cache:/cache
+      # Your actual media library
+      - /path/to/your/movies:/media/movies:ro
+      - /path/to/your/tvshows:/media/tvshows:ro
+      # Shared volume for "Leaving Soon" symlinks
+      - leaving-soon-data:/data/leaving-soon
+    ports:
+      - "8096:8096"
+    restart: unless-stopped
+
+  # OPTION 1: Go Sidecar Service
+  # This service runs alongside Jellyfin and manages symlinks
+  jellyfin-sidecar:
+    build: ./jellyfin-sidecar
+    container_name: jellyfin-sidecar
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      # Config file
+      - ./jellyfin-sidecar/config.json:/etc/jellyfin-sidecar/config.json:ro
+      # Shared volume with Jellyfin for symlinks
+      - leaving-soon-data:/data/leaving-soon
+      # Access to source media (read-only)
+      - /path/to/your/movies:/media/movies:ro
+      - /path/to/your/tvshows:/media/tvshows:ro
+    ports:
+      - "8090:8090"
+    depends_on:
+      - jellyfin
+    restart: unless-stopped
+
+  # Your Prunarr service (example configuration)
+  prunarr:
+    image: your-prunarr-image:latest
+    container_name: prunarr
+    environment:
+      # Configure Prunarr to use the sidecar service
+      - JELLYFIN_SIDECAR_URL=http://jellyfin-sidecar:8090
+      - JELLYFIN_SIDECAR_API_KEY=your-api-key-here
+    volumes:
+      - ./prunarr-config:/config
+    depends_on:
+      - jellyfin-sidecar
+    restart: unless-stopped
+
+volumes:
+  # Shared volume for "Leaving Soon" symlinks
+  # Both Jellyfin and the sidecar service need access to this
+  leaving-soon-data:
+
+---
+# OPTION 2: C# Plugin Installation Notes
+# 
+# For the C# plugin approach, you would NOT need the jellyfin-sidecar service.
+# Instead, you would:
+# 
+# 1. Build the Jellyfin.Plugin.PrunarrBridge.dll
+# 2. Copy it to the Jellyfin plugins directory:
+#    ./jellyfin-config/plugins/PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.dll
+# 
+# 3. Configure the plugin through Jellyfin's web UI (Admin > Dashboard > Plugins)
+# 
+# 4. Configure Prunarr to call the plugin's endpoints:
+#    http://jellyfin:8096/api/prunarr/leaving-soon/add
+#    http://jellyfin:8096/api/prunarr/leaving-soon/remove
+# 
+# The plugin runs inside Jellyfin's process and has direct access to:
+# - Jellyfin's filesystem
+# - ILibraryManager for Virtual Folder management
+# - No additional container needed
+# 
+# However, you still need to ensure Prunarr can access the source media
+# to provide the correct paths to the plugin.

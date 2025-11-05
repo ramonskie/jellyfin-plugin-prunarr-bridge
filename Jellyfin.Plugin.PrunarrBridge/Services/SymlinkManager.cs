@@ -1,0 +1,117 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediaBrowser.Controller.Library;
+using Microsoft.Extensions.Logging;
+
+namespace Jellyfin.Plugin.PrunarrBridge.Services;
+
+/// <summary>
+/// Service for managing symlinks within Jellyfin's filesystem context.
+/// </summary>
+public class SymlinkManager
+{
+    private readonly ILogger<SymlinkManager> _logger;
+    private readonly ILibraryManager _libraryManager;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SymlinkManager"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="libraryManager">The library manager.</param>
+    public SymlinkManager(ILogger<SymlinkManager> logger, ILibraryManager libraryManager)
+    {
+        _logger = logger;
+        _libraryManager = libraryManager;
+    }
+
+    /// <summary>
+    /// Creates a symlink to a media item.
+    /// </summary>
+    /// <param name="sourcePath">The source media file path.</param>
+    /// <param name="targetDirectory">The target directory for the symlink.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The path to the created symlink.</returns>
+    public async Task<string> CreateSymlinkAsync(string sourcePath, string targetDirectory, CancellationToken cancellationToken)
+    {
+        if (!File.Exists(sourcePath))
+        {
+            throw new FileNotFoundException($"Source file not found: {sourcePath}");
+        }
+
+        if (!Directory.Exists(targetDirectory))
+        {
+            _logger.LogInformation("Creating target directory: {Directory}", targetDirectory);
+            Directory.CreateDirectory(targetDirectory);
+        }
+
+        var fileName = Path.GetFileName(sourcePath);
+        var symlinkPath = Path.Combine(targetDirectory, fileName);
+
+        // If symlink already exists, remove it
+        if (File.Exists(symlinkPath))
+        {
+            _logger.LogInformation("Removing existing symlink: {Path}", symlinkPath);
+            File.Delete(symlinkPath);
+        }
+
+        _logger.LogInformation("Creating symlink: {Source} -> {Target}", sourcePath, symlinkPath);
+
+        // Create symlink (Unix-specific, Windows requires different approach)
+        try
+        {
+            File.CreateSymbolicLink(symlinkPath, sourcePath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create symlink");
+            throw;
+        }
+
+        return symlinkPath;
+    }
+
+    /// <summary>
+    /// Removes a symlink.
+    /// </summary>
+    /// <param name="symlinkPath">The symlink path to remove.</param>
+    public void RemoveSymlink(string symlinkPath)
+    {
+        if (!File.Exists(symlinkPath))
+        {
+            _logger.LogWarning("Symlink does not exist: {Path}", symlinkPath);
+            return;
+        }
+
+        _logger.LogInformation("Removing symlink: {Path}", symlinkPath);
+        File.Delete(symlinkPath);
+    }
+
+    /// <summary>
+    /// Clears all symlinks in a directory.
+    /// </summary>
+    /// <param name="directory">The directory to clear.</param>
+    public void ClearSymlinks(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            _logger.LogWarning("Directory does not exist: {Directory}", directory);
+            return;
+        }
+
+        _logger.LogInformation("Clearing symlinks in: {Directory}", directory);
+        
+        var files = Directory.GetFiles(directory);
+        foreach (var file in files)
+        {
+            var fileInfo = new FileInfo(file);
+            if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+            {
+                File.Delete(file);
+                _logger.LogDebug("Removed symlink: {File}", file);
+            }
+        }
+    }
+}

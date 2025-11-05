@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Version>1.0.0</Version>
+    <Description>Jellyfin plugin for Prunarr integration. Manages 'Leaving Soon' virtual folders via HTTP API.</Description>
+    <Company>Prunarr</Company>
+    <Authors>Prunarr Contributors</Authors>
+    <RepositoryUrl>https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Jellyfin.Controller" Version="10.*" />
+    <PackageReference Include="Jellyfin.Model" Version="10.*" />
+  </ItemGroup>
+
+</Project>
