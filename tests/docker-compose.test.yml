@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin-test
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./jellyfin-config:/config:Z
+      - ./jellyfin-cache:/cache:Z
+      # Test media
+      - ./test-media/movies:/media/movies:ro,Z
+      # Shared volume for "Leaving Soon" symlinks
+      - ./leaving-soon-data:/data/leaving-soon:Z
+    ports:
+      - "8096:8096"
+    user: "${UID:-1000}:${GID:-1000}"
+    restart: unless-stopped
