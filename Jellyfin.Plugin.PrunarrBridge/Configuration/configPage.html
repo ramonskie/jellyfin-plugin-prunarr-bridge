@@ -12,16 +12,7 @@
                     <div class="verticalSection">
                         <h2>Prunarr Bridge Configuration</h2>
                         <p>Configure the Prunarr Bridge plugin to manage "Leaving Soon" media items via symlinks.</p>
-                    </div>
-
-                    <div class="verticalSection">
-                        <div class="inputContainer">
-                            <label class="inputLabel inputLabelUnfocused" for="txtApiKey">API Key:</label>
-                            <input id="txtApiKey" name="txtApiKey" type="text" is="emby-input" class="emby-input" />
-                            <div class="fieldDescription">
-                                API key for authenticating Prunarr requests. Generate a secure random key.
-                            </div>
-                        </div>
+                        <p><strong>Note:</strong> This plugin uses Jellyfin's built-in authentication. Use your Jellyfin API key when calling the endpoints.</p>
                     </div>
 
                     <div class="verticalSection">
@@ -72,7 +63,6 @@
                 .addEventListener('pageshow', function () {
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(PrunarrBridgeConfigPage.pluginUniqueId).then(function (config) {
-                        document.querySelector('#txtApiKey').value = config.ApiKey || '';
                         document.querySelector('#txtSymlinkBasePath').value = config.SymlinkBasePath || '/var/lib/jellyfin/leaving-soon';
                         document.querySelector('#txtVirtualFolderName').value = config.VirtualFolderName || 'Leaving Soon';
                         document.querySelector('#chkAutoCreateVirtualFolder').checked = config.AutoCreateVirtualFolder !== false;
@@ -86,7 +76,6 @@
                     Dashboard.showLoadingMsg();
 
                     ApiClient.getPluginConfiguration(PrunarrBridgeConfigPage.pluginUniqueId).then(function (config) {
-                        config.ApiKey = document.querySelector('#txtApiKey').value;
                         config.SymlinkBasePath = document.querySelector('#txtSymlinkBasePath').value;
                         config.VirtualFolderName = document.querySelector('#txtVirtualFolderName').value;
                         config.AutoCreateVirtualFolder = document.querySelector('#chkAutoCreateVirtualFolder').checked;

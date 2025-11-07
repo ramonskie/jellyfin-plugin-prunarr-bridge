@@ -2,15 +2,23 @@
     {
         "guid": "a8c0f8e4-7d3c-4b5a-9e2f-1a2b3c4d5e6f",
         "name": "Prunarr Bridge",
-        "description": "Jellyfin plugin for Prunarr integration. Manages 'Leaving Soon' virtual folders via HTTP API, allowing Prunarr to display media approaching deletion without direct filesystem access.",
-        "overview": "Bridge between Prunarr and Jellyfin for managing 'Leaving Soon' content",
+        "description": "Jellyfin plugin for Prunarr integration. Manages symlinks via HTTP API. v2.0+ uses simplified design: symlink management only, no library management.",
+        "overview": "Bridge between Prunarr and Jellyfin for managing symlinks",
         "owner": "prunarr",
         "category": "General",
         "imageUrl": "https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/images/icon.svg",
         "versions": [
             {
+                "version": "2.0.0.0",
+                "changelog": "Version 2.0.0 - BREAKING CHANGES\n- Simplified to symlink-only design (Single Responsibility Principle)\n- Removed Virtual Folder management (Prunarr must handle this)\n- Removed library scanning (Prunarr must handle this)\n- Renamed endpoints: /leaving-soon/* → /symlinks/*\n- Removed /clear endpoint (use /remove for each item)\n- Added /symlinks/list endpoint\n- Removed AutoCreateVirtualFolder configuration\n- Removed VirtualFolderName configuration\n- Updated description and documentation\n\nMigration Guide:\n- Update API endpoints in Prunarr\n- Prunarr must create libraries via Jellyfin API\n- Prunarr must trigger scans after batch operations\n- See API.md for complete migration guide\n",
+                "targetAbi": "10.11.0.0",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v2.0.0/jellyfin-plugin-prunarr-bridge.zip",
+                "checksum": "to-be-generated",
+                "timestamp": "2025-11-07T00:00:00Z"
+            },
+            {
                 "version": "1.0.4.0",
-                "changelog": "Version 1.0.3\n- Updated to .NET 9.0 and Jellyfin 10.11.2\n- Automated manifest updates with JPRM\n",
+                "changelog": "Version 1.0.4\n- Updated to .NET 9.0 and Jellyfin 10.11.2\n- Automated manifest updates with JPRM\n",
                 "targetAbi": "10.11.0.0",
                 "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.4/jellyfin-plugin-prunarr-bridge.zip",
                 "checksum": "e172e888ecc68bdd3cc4129b4e209ff6",

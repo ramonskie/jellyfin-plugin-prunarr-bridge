@@ -34,7 +34,7 @@ public class SymlinkManager
     /// <param name="targetDirectory">The target directory for the symlink.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The path to the created symlink.</returns>
-    public async Task<string> CreateSymlinkAsync(string sourcePath, string targetDirectory, CancellationToken cancellationToken)
+    public Task<string> CreateSymlinkAsync(string sourcePath, string targetDirectory, CancellationToken cancellationToken)
     {
         if (!File.Exists(sourcePath))
         {
@@ -70,7 +70,7 @@ public class SymlinkManager
             throw;
         }
 
-        return symlinkPath;
+        return Task.FromResult(symlinkPath);
     }
 
     /// <summary>
@@ -114,4 +114,68 @@ public class SymlinkManager
             }
         }
     }
+
+    /// <summary>
+    /// Lists all symlinks in a directory.
+    /// </summary>
+    /// <param name="directory">The directory to list symlinks from.</param>
+    /// <returns>An array of symlink information including path and target.</returns>
+    public SymlinkInfo[] ListSymlinks(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            _logger.LogWarning("Directory does not exist: {Directory}", directory);
+            return Array.Empty<SymlinkInfo>();
+        }
+
+        _logger.LogDebug("Listing symlinks in: {Directory}", directory);
+        
+        var symlinks = new System.Collections.Generic.List<SymlinkInfo>();
+        var files = Directory.GetFiles(directory);
+        
+        foreach (var file in files)
+        {
+            var fileInfo = new FileInfo(file);
+            if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+            {
+                try
+                {
+                    var targetPath = fileInfo.LinkTarget ?? "unknown";
+                    symlinks.Add(new SymlinkInfo
+                    {
+                        Path = file,
+                        Target = targetPath,
+                        Name = Path.GetFileName(file)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to read symlink target for: {File}", file);
+                }
+            }
+        }
+
+        return symlinks.ToArray();
+    }
+}
+
+/// <summary>
+/// Information about a symlink.
+/// </summary>
+public class SymlinkInfo
+{
+    /// <summary>
+    /// Gets or sets the full path to the symlink.
+    /// </summary>
+    public string Path { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the target path the symlink points to.
+    /// </summary>
+    public string Target { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the filename of the symlink.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
 }

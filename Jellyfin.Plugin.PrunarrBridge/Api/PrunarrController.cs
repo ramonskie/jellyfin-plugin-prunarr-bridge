@@ -23,7 +23,6 @@ public class PrunarrController : ControllerBase
 {
     private readonly ILogger<PrunarrController> _logger;
     private readonly SymlinkManager _symlinkManager;
-    private readonly VirtualFolderManager _virtualFolderManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PrunarrController"/> class.
@@ -38,20 +37,21 @@ public class PrunarrController : ControllerBase
     {
         _logger = logger;
         _symlinkManager = new SymlinkManager(loggerFactory.CreateLogger<SymlinkManager>(), libraryManager);
-        _virtualFolderManager = new VirtualFolderManager(loggerFactory.CreateLogger<VirtualFolderManager>(), libraryManager);
     }
 
     /// <summary>
-    /// Adds items to the "Leaving Soon" library.
+    /// Creates symlinks for media items.
     /// </summary>
     /// <param name="request">The request containing items to add.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Success response.</returns>
-    [HttpPost("leaving-soon/add")]
+    [HttpPost("symlinks/add")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AddItemsResponse>> AddLeavingSoonItems(
+    public async Task<ActionResult<AddItemsResponse>> AddSymlinks(
         [FromBody] AddItemsRequest request,
         CancellationToken cancellationToken)
     {
@@ -60,13 +60,7 @@ public class PrunarrController : ControllerBase
             return BadRequest(new { error = "No items provided" });
         }
 
-        _logger.LogInformation("Received request to add {Count} items to Leaving Soon", request.Items.Count);
-
-        var config = Plugin.Instance?.Configuration;
-        if (config == null)
-        {
-            return StatusCode(500, new { error = "Plugin configuration not available" });
-        }
+        _logger.LogInformation("Received request to create {Count} symlinks", request.Items.Count);
 
         var createdSymlinks = new List<string>();
         var errors = new List<string>();
@@ -77,7 +71,7 @@ public class PrunarrController : ControllerBase
             {
                 var symlinkPath = await _symlinkManager.CreateSymlinkAsync(
                     item.SourcePath,
-                    config.SymlinkBasePath,
+                    item.TargetDirectory,
                     cancellationToken);
                 
                 createdSymlinks.Add(symlinkPath);
@@ -86,20 +80,6 @@ public class PrunarrController : ControllerBase
             {
                 _logger.LogError(ex, "Failed to create symlink for {Path}", item.SourcePath);
                 errors.Add($"{item.SourcePath}: {ex.Message}");
-            }
-        }
-
-        // Trigger library scan if configured
-        if (config.AutoCreateVirtualFolder && createdSymlinks.Count > 0)
-        {
-            try
-            {
-                await _virtualFolderManager.ScanLibraryAsync(config.VirtualFolderName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to scan library");
-                errors.Add($"Library scan failed: {ex.Message}");
             }
         }
 
@@ -112,21 +92,23 @@ public class PrunarrController : ControllerBase
     }
 
     /// <summary>
-    /// Removes items from the "Leaving Soon" library.
+    /// Removes symlinks for media items.
     /// </summary>
-    /// <param name="request">The request containing items to remove.</param>
+    /// <param name="request">The request containing symlink paths to remove.</param>
     /// <returns>Success response.</returns>
-    [HttpPost("leaving-soon/remove")]
+    [HttpPost("symlinks/remove")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<RemoveItemsResponse> RemoveLeavingSoonItems([FromBody] RemoveItemsRequest request)
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public ActionResult<RemoveItemsResponse> RemoveSymlinks([FromBody] RemoveItemsRequest request)
     {
         if (request?.SymlinkPaths == null || request.SymlinkPaths.Count == 0)
         {
             return BadRequest(new { error = "No symlink paths provided" });
         }
 
-        _logger.LogInformation("Received request to remove {Count} items from Leaving Soon", request.SymlinkPaths.Count);
+        _logger.LogInformation("Received request to remove {Count} symlinks", request.SymlinkPaths.Count);
 
         var removed = new List<string>();
         var errors = new List<string>();
@@ -154,50 +136,52 @@ public class PrunarrController : ControllerBase
     }
 
     /// <summary>
-    /// Clears all items from the "Leaving Soon" library.
+    /// Lists all symlinks in a directory.
     /// </summary>
-    /// <returns>Success response.</returns>
-    [HttpPost("leaving-soon/clear")]
+    /// <param name="directory">The directory to list symlinks from.</param>
+    /// <returns>List of symlinks.</returns>
+    [HttpGet("symlinks/list")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult ClearLeavingSoon()
+    public ActionResult<ListSymlinksResponse> ListSymlinks([FromQuery] string directory)
     {
-        _logger.LogInformation("Received request to clear Leaving Soon library");
-
-        var config = Plugin.Instance?.Configuration;
-        if (config == null)
+        if (string.IsNullOrWhiteSpace(directory))
         {
-            return StatusCode(500, new { error = "Plugin configuration not available" });
+            return BadRequest(new { error = "Directory parameter is required" });
         }
+
+        _logger.LogInformation("Received request to list symlinks in {Directory}", directory);
 
         try
         {
-            _symlinkManager.ClearSymlinks(config.SymlinkBasePath);
-            return Ok(new { success = true, message = "Leaving Soon library cleared" });
+            var symlinks = _symlinkManager.ListSymlinks(directory);
+            return Ok(new ListSymlinksResponse
+            {
+                Symlinks = symlinks,
+                Count = symlinks.Length
+            });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to clear Leaving Soon library");
+            _logger.LogError(ex, "Failed to list symlinks");
             return StatusCode(500, new { error = ex.Message });
         }
     }
 
     /// <summary>
-    /// Gets plugin status and configuration.
+    /// Gets plugin status and version.
     /// </summary>
     /// <returns>Plugin status.</returns>
     [HttpGet("status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<StatusResponse> GetStatus()
     {
-        var config = Plugin.Instance?.Configuration;
-        
         return Ok(new StatusResponse
         {
-            Version = Plugin.Instance?.Version.ToString() ?? "unknown",
-            SymlinkBasePath = config?.SymlinkBasePath ?? "not configured",
-            VirtualFolderName = config?.VirtualFolderName ?? "not configured",
-            AutoCreateVirtualFolder = config?.AutoCreateVirtualFolder ?? false
+            Version = Plugin.Instance?.Version.ToString() ?? "unknown"
         });
     }
 }
@@ -228,7 +212,13 @@ public class MediaItem
     public string SourcePath { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the deletion date (optional).
+    /// Gets or sets the target directory where the symlink should be created.
+    /// </summary>
+    [Required]
+    public string TargetDirectory { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the deletion date (optional, for informational purposes only).
     /// </summary>
     public DateTime? DeletionDate { get; set; }
 }
@@ -296,21 +286,22 @@ public class StatusResponse
     /// Gets or sets the plugin version.
     /// </summary>
     public string Version { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Response model for list symlinks endpoint.
+/// </summary>
+public class ListSymlinksResponse
+{
+    /// <summary>
+    /// Gets or sets the array of symlinks.
+    /// </summary>
+    public SymlinkInfo[] Symlinks { get; set; } = Array.Empty<SymlinkInfo>();
 
     /// <summary>
-    /// Gets or sets the symlink base path.
+    /// Gets or sets the count of symlinks.
     /// </summary>
-    public string SymlinkBasePath { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the virtual folder name.
-    /// </summary>
-    public string VirtualFolderName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether auto-create virtual folder is enabled.
-    /// </summary>
-    public bool AutoCreateVirtualFolder { get; set; }
+    public int Count { get; set; }
 }
 
 #endregion
