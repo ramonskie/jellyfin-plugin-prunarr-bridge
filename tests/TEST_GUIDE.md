@@ -42,7 +42,7 @@ If you prefer to test manually, follow these steps:
 ### Step 1: Build the Plugin
 
 ```bash
-cd Jellyfin.Plugin.PrunarrBridge
+cd Jellyfin.Plugin.OxiCleanarrBridge
 dotnet build --configuration Release
 cd ..
 ```
@@ -51,11 +51,11 @@ cd ..
 
 ```bash
 # Create plugin directory
-mkdir -p jellyfin-config/plugins/PrunarrBridge
+mkdir -p jellyfin-config/plugins/OxiCleanarrBridge
 
 # Find and copy the built DLL
-cp Jellyfin.Plugin.PrunarrBridge/bin/Release/net*/Jellyfin.Plugin.PrunarrBridge.dll \
-   jellyfin-config/plugins/PrunarrBridge/
+cp Jellyfin.Plugin.OxiCleanarrBridge/bin/Release/net*/Jellyfin.Plugin.OxiCleanarrBridge.dll \
+   jellyfin-config/plugins/OxiCleanarrBridge/
 ```
 
 ### Step 3: Create Test Media
@@ -91,7 +91,7 @@ curl http://localhost:8096/health
 ### Step 6: Configure the Plugin
 
 1. Go to **Dashboard** → **Plugins**
-2. Find **Prunarr Bridge** in the list
+2. Find **OxiCleanarr Bridge** in the list
 3. Click on it to configure
 4. Set the following:
    - **Symlink Base Path**: `/data/leaving-soon`
@@ -106,7 +106,7 @@ curl http://localhost:8096/health
 ### Step 7: Test the Status Endpoint
 
 ```bash
-curl http://localhost:8096/api/prunarr/status
+curl http://localhost:8096/api/oxicleanarr/status
 ```
 
 Expected output:
@@ -122,7 +122,7 @@ Expected output:
 ### Step 8: Add a Movie to "Leaving Soon"
 
 ```bash
-curl -X POST http://localhost:8096/api/prunarr/leaving-soon/add \
+curl -X POST http://localhost:8096/api/oxicleanarr/leaving-soon/add \
   -H "Content-Type: application/json" \
   -d '{
     "items": [
@@ -171,7 +171,7 @@ You should see a symlink pointing to the original movie file.
 
 Remove the movie from "Leaving Soon":
 ```bash
-curl -X POST http://localhost:8096/api/prunarr/leaving-soon/remove \
+curl -X POST http://localhost:8096/api/oxicleanarr/leaving-soon/remove \
   -H "Content-Type: application/json" \
   -d '{
     "symlinkPaths": [
@@ -190,7 +190,7 @@ ls -lah leaving-soon-data/
 Add the movie back, then test clearing all:
 ```bash
 # Add again
-curl -X POST http://localhost:8096/api/prunarr/leaving-soon/add \
+curl -X POST http://localhost:8096/api/oxicleanarr/leaving-soon/add \
   -H "Content-Type: application/json" \
   -d '{
     "items": [
@@ -201,7 +201,7 @@ curl -X POST http://localhost:8096/api/prunarr/leaving-soon/add \
   }'
 
 # Clear all
-curl -X POST http://localhost:8096/api/prunarr/leaving-soon/clear
+curl -X POST http://localhost:8096/api/oxicleanarr/leaving-soon/clear
 ```
 
 ## Troubleshooting
@@ -213,12 +213,12 @@ curl -X POST http://localhost:8096/api/prunarr/leaving-soon/clear
 **Solutions**:
 1. Check if DLL is in correct location:
    ```bash
-   ls -lah jellyfin-config/plugins/PrunarrBridge/
+   ls -lah jellyfin-config/plugins/OxiCleanarrBridge/
    ```
 2. Check Jellyfin logs:
    ```bash
    docker logs jellyfin-test | grep -i plugin
-   docker logs jellyfin-test | grep -i prunarr
+   docker logs jellyfin-test | grep -i oxicleanarr
    ```
 3. Restart Jellyfin:
    ```bash
@@ -270,8 +270,8 @@ curl -X POST http://localhost:8096/api/prunarr/leaving-soon/clear
 1. Verify plugin is loaded:
    - Check Dashboard → Plugins
 2. Check the correct URL format:
-   - ✅ Correct: `http://localhost:8096/api/prunarr/status`
-   - ❌ Wrong: `http://localhost:8096/prunarr/status`
+   - ✅ Correct: `http://localhost:8096/api/oxicleanarr/status`
+   - ❌ Wrong: `http://localhost:8096/oxicleanarr/status`
 3. Restart Jellyfin to reload plugin routes:
    ```bash
    docker restart jellyfin-test
@@ -304,7 +304,7 @@ curl -X POST http://localhost:8096/api/prunarr/leaving-soon/clear
 docker logs jellyfin-test -f
 
 # Filter for plugin logs
-docker logs jellyfin-test 2>&1 | grep -i prunarr
+docker logs jellyfin-test 2>&1 | grep -i oxicleanarr
 
 # Filter for errors
 docker logs jellyfin-test 2>&1 | grep -i error
@@ -362,7 +362,7 @@ Once the test with dummy files works, test with real media:
 
 3. Add a real movie:
    ```bash
-   curl -X POST http://localhost:8096/api/prunarr/leaving-soon/add \
+   curl -X POST http://localhost:8096/api/oxicleanarr/leaving-soon/add \
      -H "Content-Type: application/json" \
      -d '{
        "items": [
@@ -391,7 +391,7 @@ docker-compose -f docker-compose.test.yml down
 rm -rf test-media jellyfin-config jellyfin-cache leaving-soon-data
 
 # Remove built plugin (optional)
-rm -rf Jellyfin.Plugin.PrunarrBridge/bin Jellyfin.Plugin.PrunarrBridge/obj
+rm -rf Jellyfin.Plugin.OxiCleanarrBridge/bin Jellyfin.Plugin.OxiCleanarrBridge/obj
 ```
 
 ## Next Steps
@@ -409,7 +409,7 @@ After successful testing:
    - Test library scan time
    - Test removal performance
 4. **Integration Testing**:
-   - Test with actual Prunarr instance
+   - Test with actual OxiCleanarr instance
    - Test automatic cleanup
    - Test date-based expiration
 

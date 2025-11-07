@@ -1,6 +1,6 @@
-# Installation Guide: Jellyfin Plugin for Prunarr
+# Installation Guide: Jellyfin Plugin for OxiCleanarr
 
-This guide explains how to install and configure the Jellyfin.Plugin.PrunarrBridge plugin.
+This guide explains how to install and configure the Jellyfin.Plugin.OxiCleanarrBridge plugin.
 
 ## Overview
 
@@ -11,7 +11,7 @@ This native Jellyfin plugin embeds symlink management functionality directly int
 - Jellyfin server (version 10.8.0 or newer)
 - .NET SDK 7.0 or newer (for building the plugin)
 - Access to Jellyfin's plugin directory
-- Prunarr configured and running
+- OxiCleanarr configured and running
 
 ## Building the Plugin
 
@@ -32,14 +32,14 @@ apt-get install dotnet-sdk-7.0
 ### 2. Build the Plugin
 
 ```bash
-cd Jellyfin.Plugin.PrunarrBridge
+cd Jellyfin.Plugin.OxiCleanarrBridge
 dotnet restore
 dotnet build --configuration Release
 ```
 
 The compiled plugin will be located at:
 ```
-bin/Release/net7.0/Jellyfin.Plugin.PrunarrBridge.dll
+bin/Release/net7.0/Jellyfin.Plugin.OxiCleanarrBridge.dll
 ```
 
 ## Installation
@@ -50,13 +50,13 @@ bin/Release/net7.0/Jellyfin.Plugin.PrunarrBridge.dll
 
 2. **Create the plugin directory**:
    ```bash
-   mkdir -p /path/to/jellyfin/config/plugins/PrunarrBridge
+   mkdir -p /path/to/jellyfin/config/plugins/OxiCleanarrBridge
    ```
 
 3. **Copy the plugin DLL**:
    ```bash
-   cp bin/Release/net7.0/Jellyfin.Plugin.PrunarrBridge.dll \
-      /path/to/jellyfin/config/plugins/PrunarrBridge/
+   cp bin/Release/net7.0/Jellyfin.Plugin.OxiCleanarrBridge.dll \
+      /path/to/jellyfin/config/plugins/OxiCleanarrBridge/
    ```
 
 4. **Restart Jellyfin**:
@@ -73,13 +73,13 @@ bin/Release/net7.0/Jellyfin.Plugin.PrunarrBridge.dll
 
 2. **Create the plugin directory**:
    ```bash
-   mkdir -p /var/lib/jellyfin/plugins/PrunarrBridge
+   mkdir -p /var/lib/jellyfin/plugins/OxiCleanarrBridge
    ```
 
 3. **Copy the plugin DLL**:
    ```bash
-   cp bin/Release/net7.0/Jellyfin.Plugin.PrunarrBridge.dll \
-      /var/lib/jellyfin/plugins/PrunarrBridge/
+   cp bin/Release/net7.0/Jellyfin.Plugin.OxiCleanarrBridge.dll \
+      /var/lib/jellyfin/plugins/OxiCleanarrBridge/
    ```
 
 4. **Restart Jellyfin service**:
@@ -97,7 +97,7 @@ The plugin is **completely stateless** and requires no configuration. All paths 
 
 1. Log into Jellyfin as an administrator
 2. Navigate to **Dashboard** → **Plugins**
-3. Find **Prunarr Bridge** in the plugin list to confirm it's loaded
+3. Find **OxiCleanarr Bridge** in the plugin list to confirm it's loaded
 
 Check Jellyfin logs for any errors:
 ```bash
@@ -108,19 +108,19 @@ docker logs jellyfin
 journalctl -u jellyfin -f
 ```
 
-## Integration with Prunarr
+## Integration with OxiCleanarr
 
-### Configure Prunarr to Use the Plugin
+### Configure OxiCleanarr to Use the Plugin
 
-Update Prunarr's configuration to point to the plugin endpoints:
+Update OxiCleanarr's configuration to point to the plugin endpoints:
 
-**Base URL**: `http://jellyfin:8096/api/prunarr` (or your Jellyfin URL)
+**Base URL**: `http://jellyfin:8096/api/oxicleanarr` (or your Jellyfin URL)
 
 **API Endpoints**:
-- Add symlinks: `POST /api/prunarr/symlinks/add`
-- Remove symlinks: `POST /api/prunarr/symlinks/remove`
-- List symlinks: `GET /api/prunarr/symlinks/list?directory=<path>`
-- Status: `GET /api/prunarr/status`
+- Add symlinks: `POST /api/oxicleanarr/symlinks/add`
+- Remove symlinks: `POST /api/oxicleanarr/symlinks/remove`
+- List symlinks: `GET /api/oxicleanarr/symlinks/list?directory=<path>`
+- Status: `GET /api/oxicleanarr/status`
 
 **Authentication**: Use Jellyfin's built-in authentication with `X-Emby-Token` header
 
@@ -128,7 +128,7 @@ Update Prunarr's configuration to point to the plugin endpoints:
 
 **Create Symlinks:**
 ```bash
-curl -X POST http://jellyfin:8096/api/prunarr/symlinks/add \
+curl -X POST http://jellyfin:8096/api/oxicleanarr/symlinks/add \
   -H "Content-Type: application/json" \
   -H "X-Emby-Token: your-jellyfin-api-token" \
   -d '{
@@ -143,13 +143,13 @@ curl -X POST http://jellyfin:8096/api/prunarr/symlinks/add \
 
 **List Symlinks:**
 ```bash
-curl "http://jellyfin:8096/api/prunarr/symlinks/list?directory=/data/leaving-soon" \
+curl "http://jellyfin:8096/api/oxicleanarr/symlinks/list?directory=/data/leaving-soon" \
   -H "X-Emby-Token: your-jellyfin-api-token"
 ```
 
 **Remove Symlinks:**
 ```bash
-curl -X POST http://jellyfin:8096/api/prunarr/symlinks/remove \
+curl -X POST http://jellyfin:8096/api/oxicleanarr/symlinks/remove \
   -H "Content-Type: application/json" \
   -H "X-Emby-Token: your-jellyfin-api-token" \
   -d '{
@@ -187,7 +187,7 @@ services:
 ### 1. Check Plugin Status
 
 ```bash
-curl http://jellyfin:8096/api/prunarr/status
+curl http://jellyfin:8096/api/oxicleanarr/status
 ```
 
 Expected response:
@@ -203,13 +203,13 @@ The plugin uses Jellyfin's built-in authentication:
 
 1. Go to **Dashboard** → **API Keys**
 2. Click **+** to create a new API key
-3. Give it a name (e.g., "Prunarr")
+3. Give it a name (e.g., "OxiCleanarr")
 4. Copy the generated token
 
 ### 3. Test Adding a Symlink
 
 ```bash
-curl -X POST http://jellyfin:8096/api/prunarr/symlinks/add \
+curl -X POST http://jellyfin:8096/api/oxicleanarr/symlinks/add \
   -H "Content-Type: application/json" \
   -H "X-Emby-Token: your-token-here" \
   -d '{
@@ -240,7 +240,7 @@ ls -lah /data/leaving-soon/
 
 ### 5. Create Library in Jellyfin (One-Time)
 
-The plugin does NOT create libraries. You or Prunarr must create the library:
+The plugin does NOT create libraries. You or OxiCleanarr must create the library:
 
 1. Navigate to **Dashboard** → **Libraries**
 2. Click **Add Media Library**
@@ -285,7 +285,7 @@ To remove the plugin:
 
 1. Delete the plugin directory:
    ```bash
-   rm -rf /path/to/jellyfin/config/plugins/PrunarrBridge
+   rm -rf /path/to/jellyfin/config/plugins/OxiCleanarrBridge
    ```
 
 2. Restart Jellyfin

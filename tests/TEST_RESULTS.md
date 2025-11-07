@@ -32,7 +32,7 @@
 
 #### 1. Plugin Status Test
 ```bash
-GET /api/prunarr/status
+GET /api/oxicleanarr/status
 Response: {
   "Version": "1.0.3.0",
   "SymlinkBasePath": "/data/leaving-soon",
@@ -44,7 +44,7 @@ Status: ✅ PASS
 
 #### 2. Add Movie Test
 ```bash
-POST /api/prunarr/leaving-soon/add
+POST /api/oxicleanarr/leaving-soon/add
 Request: {
   "items": [{
     "sourcePath": "/media/movies/Test Movie (2024)/Test Movie (2024).mkv"
@@ -74,7 +74,7 @@ Status: ✅ PASS
 
 #### 4. Remove Movie Test
 ```bash
-POST /api/prunarr/leaving-soon/remove
+POST /api/oxicleanarr/leaving-soon/remove
 Request: {
   "symlinkPaths": ["/data/leaving-soon/Test Movie (2024).mkv"]
 }
@@ -88,7 +88,7 @@ Status: ✅ PASS
 
 #### 5. Clear Library Test
 ```bash
-POST /api/prunarr/leaving-soon/clear
+POST /api/oxicleanarr/leaving-soon/clear
 Response: {
   "success": true,
   "message": "Leaving Soon library cleared"
@@ -109,7 +109,7 @@ Status: ✅ PASS
 
 ### Configuration Notes
 - Plugin requires `/data/leaving-soon` path mounted in container
-- Configuration file: `jellyfin-config/plugins/configurations/Jellyfin.Plugin.PrunarrBridge.xml`
+- Configuration file: `jellyfin-config/plugins/configurations/Jellyfin.Plugin.OxiCleanarrBridge.xml`
 - Library is auto-created with collection type "movies"
 - Symlinks work correctly with read-only source media
 
@@ -136,17 +136,17 @@ export JELLYFIN_PASS=password
 
 ## Conclusion
 
-The Jellyfin Prunarr Bridge plugin successfully:
+The Jellyfin OxiCleanarr Bridge plugin successfully:
 - Creates and manages symlinks for "Leaving Soon" content
 - Integrates with Jellyfin's library system
 - Provides a working REST API for automation
 - Handles cleanup operations correctly
 
-The plugin is ready for integration with Prunarr or other automation tools.
+The plugin is ready for integration with OxiCleanarr or other automation tools.
 
 ## Next Steps
 
 1. Test with larger libraries (100+ movies)
 2. Test concurrent API requests
-3. Integration with actual Prunarr instance
+3. Integration with actual OxiCleanarr instance
 4. Performance testing with network-mounted storage

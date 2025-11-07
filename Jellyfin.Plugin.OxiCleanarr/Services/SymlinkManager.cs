@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.PrunarrBridge.Services;
+namespace Jellyfin.Plugin.OxiCleanarr.Services;
 
 /// <summary>
 /// Service for managing symlinks within Jellyfin's filesystem context.

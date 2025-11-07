@@ -35,9 +35,9 @@ echo ""
 
 # Test 1: Status endpoint
 echo "Test 1: Checking plugin status..."
-echo "Request: GET $JELLYFIN_URL/api/prunarr/status"
+echo "Request: GET $JELLYFIN_URL/api/oxicleanarr/status"
 echo ""
-STATUS=$(curl -s "$JELLYFIN_URL/api/prunarr/status" -H "X-Emby-Token: $TOKEN")
+STATUS=$(curl -s "$JELLYFIN_URL/api/oxicleanarr/status" -H "X-Emby-Token: $TOKEN")
 echo "Response:"
 echo "$STATUS" | jq . 2>/dev/null || echo "$STATUS"
 echo ""
@@ -53,9 +53,9 @@ fi
 # Test 2: Add movie
 echo ""
 echo "Test 2: Adding test movie (creating symlink)..."
-echo "Request: POST $JELLYFIN_URL/api/prunarr/symlinks/add"
+echo "Request: POST $JELLYFIN_URL/api/oxicleanarr/symlinks/add"
 echo ""
-ADD_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/prunarr/symlinks/add" \
+ADD_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/symlinks/add" \
     -H "Content-Type: application/json" \
     -H "X-Emby-Token: $TOKEN" \
     -d '{
@@ -108,7 +108,7 @@ echo "Test 4: List Symlinks"
 echo "=========================================="
 echo ""
 
-LIST_RESPONSE=$(curl -s "$JELLYFIN_URL/api/prunarr/symlinks/list?directory=/data/leaving-soon" -H "X-Emby-Token: $TOKEN")
+LIST_RESPONSE=$(curl -s "$JELLYFIN_URL/api/oxicleanarr/symlinks/list?directory=/data/leaving-soon" -H "X-Emby-Token: $TOKEN")
 echo "Response:"
 echo "$LIST_RESPONSE" | jq . 2>/dev/null || echo "$LIST_RESPONSE"
 echo ""

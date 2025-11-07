@@ -1,6 +1,6 @@
 # Plugin Repository Setup Guide
 
-This guide explains how to set up a Jellyfin plugin repository so users can install the Prunarr Bridge plugin directly from Jellyfin's plugin catalog.
+This guide explains how to set up a Jellyfin plugin repository so users can install the OxiCleanarr Bridge plugin directly from Jellyfin's plugin catalog.
 
 > **Note for Plugin Maintainers**: This setup is required to enable the easy installation method described in README.md. Once configured, users can install the plugin by simply adding your repository URL to Jellyfin.
 
@@ -10,7 +10,7 @@ Jellyfin uses a repository system for plugins. A repository is simply a JSON man
 
 Once set up, users can install your plugin by adding this URL to Jellyfin:
 ```
-https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-prunarr-bridge/main/manifest.json
+https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
 ```
 
 ## Repository Structure
@@ -20,7 +20,7 @@ your-github-repo/
 ├── manifest.json                          # Plugin repository manifest
 ├── .github/workflows/build-release.yml    # Automated builds
 ├── build.sh                               # Manual build script
-├── Jellyfin.Plugin.PrunarrBridge/         # Plugin source code
+├── Jellyfin.Plugin.OxiCleanarrBridge/         # Plugin source code
 └── README.md
 ```
 
@@ -28,15 +28,15 @@ your-github-repo/
 
 ### 1. Create GitHub Repository
 
-1. Create a new GitHub repository (e.g., `jellyfin-plugin-prunarr-bridge`)
+1. Create a new GitHub repository (e.g., `jellyfin-plugin-oxicleanarr-bridge`)
 2. Push this code to the repository:
 
 ```bash
 cd /path/to/test-jelly-plug
 git init
 git add .
-git commit -m "Initial commit: Jellyfin Prunarr Bridge plugin"
-git remote add origin https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge.git
+git commit -m "Initial commit: Jellyfin OxiCleanarr Bridge plugin"
+git remote add origin https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge.git
 git push -u origin main
 ```
 
@@ -68,8 +68,8 @@ git push origin v1.0.0
    - Go to your repository on GitHub
    - Click "Releases" → "Create a new release"
    - Tag: `v1.0.0`
-   - Title: `Prunarr Bridge v1.0.0`
-   - Upload `jellyfin-plugin-prunarr-bridge.zip`
+   - Title: `OxiCleanarr Bridge v1.0.0`
+   - Upload `jellyfin-plugin-oxicleanarr-bridge.zip`
 
 ### 3. Update Manifest with Release URL
 
@@ -77,7 +77,7 @@ After creating the release, update `manifest.json`:
 
 1. Copy the direct download URL from the GitHub release:
    ```
-   https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.0/jellyfin-plugin-prunarr-bridge.zip
+   https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/releases/download/v1.0.0/jellyfin-plugin-oxicleanarr-bridge.zip
    ```
 
 2. Get the MD5 checksum from the `.md5` file
@@ -89,7 +89,7 @@ After creating the release, update `manifest.json`:
   "versions": [
     {
       "version": "1.0.0.0",
-      "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.0/jellyfin-plugin-prunarr-bridge.zip",
+      "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/releases/download/v1.0.0/jellyfin-plugin-oxicleanarr-bridge.zip",
       "checksum": "YOUR_ACTUAL_MD5_CHECKSUM_HERE",
       "timestamp": "2024-01-15T10:00:00Z"
     }
@@ -108,7 +108,7 @@ git push
 
 Get the raw URL for your manifest:
 ```
-https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/manifest.json
+https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
 ```
 
 Test it works by visiting the URL in your browser. You should see the JSON manifest.
@@ -121,24 +121,24 @@ Test it works by visiting the URL in your browser. You should see the JSON manif
 2. Navigate to **Dashboard** → **Plugins** → **Repositories**
 3. Click the **"+"** button
 4. Enter:
-   - **Repository Name**: `Prunarr Plugin Repository`
-   - **Repository URL**: `https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/manifest.json`
+   - **Repository Name**: `OxiCleanarr Plugin Repository`
+   - **Repository URL**: `https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json`
 5. Click **Save**
 
 ### Installing the Plugin
 
 1. Go to **Dashboard** → **Plugins** → **Catalog**
-2. Find "Prunarr Bridge" in the list
+2. Find "OxiCleanarr Bridge" in the list
 3. Click **Install**
 4. Restart Jellyfin when prompted
-5. Configure the plugin in **Dashboard** → **Plugins** → **Prunarr Bridge**
+5. Configure the plugin in **Dashboard** → **Plugins** → **OxiCleanarr Bridge**
 
 ## Repository URL for Users
 
 Give users this URL to add to their Jellyfin:
 
 ```
-https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/manifest.json
+https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
 ```
 
 Users add it via: **Dashboard** → **Plugins** → **Repositories** → **Add**
@@ -147,7 +147,7 @@ Users add it via: **Dashboard** → **Plugins** → **Repositories** → **Add**
 
 ### Automated Release (GitHub Actions)
 
-1. Update version in `Jellyfin.Plugin.PrunarrBridge.csproj`:
+1. Update version in `Jellyfin.Plugin.OxiCleanarrBridge.csproj`:
 ```xml
 <AssemblyVersion>1.1.0.0</AssemblyVersion>
 <FileVersion>1.1.0.0</FileVersion>
@@ -156,7 +156,7 @@ Users add it via: **Dashboard** → **Plugins** → **Repositories** → **Add**
 
 2. Commit the changes:
 ```bash
-git add Jellyfin.Plugin.PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.csproj
+git add Jellyfin.Plugin.OxiCleanarrBridge/Jellyfin.Plugin.OxiCleanarrBridge.csproj
 git commit -m "Bump version to 1.1.0"
 git push
 ```
@@ -177,7 +177,7 @@ git push origin v1.1.0
       "version": "1.1.0.0",
       "changelog": "What's new in this version",
       "targetAbi": "10.8.0.0",
-      "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.1.0/jellyfin-plugin-prunarr-bridge.zip",
+      "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/releases/download/v1.1.0/jellyfin-plugin-oxicleanarr-bridge.zip",
       "checksum": "NEW_MD5_CHECKSUM",
       "timestamp": "2024-02-01T10:00:00Z"
     },
@@ -210,10 +210,10 @@ git push
 [
   {
     "guid": "a8c0f8e4-7d3c-4b5a-9e2f-1a2b3c4d5e6f",  // Must match Plugin.cs
-    "name": "Prunarr Bridge",                        // Display name
+    "name": "OxiCleanarr Bridge",                        // Display name
     "description": "...",                            // Short description
     "overview": "...",                               // One-liner
-    "owner": "prunarr",                              // Owner/org
+    "owner": "oxicleanarr",                              // Owner/org
     "category": "General",                           // Category in catalog
     "versions": [                                    // Array of versions
       {
@@ -246,14 +246,14 @@ The workflow automatically generates checksums. Download the `.md5` file from th
 ### Manually
 
 ```bash
-md5sum jellyfin-plugin-prunarr-bridge.zip
-# Output: abc123def456... jellyfin-plugin-prunarr-bridge.zip
+md5sum jellyfin-plugin-oxicleanarr-bridge.zip
+# Output: abc123def456... jellyfin-plugin-oxicleanarr-bridge.zip
 # Use the hash part (before the filename)
 ```
 
 Or on macOS:
 ```bash
-md5 jellyfin-plugin-prunarr-bridge.zip
+md5 jellyfin-plugin-oxicleanarr-bridge.zip
 ```
 
 ## Troubleshooting
@@ -390,7 +390,7 @@ Host manifest.json on your own server:
 2. Install plugin from catalog
 3. Restart Jellyfin
 4. Configure plugin settings
-5. Use with Prunarr
+5. Use with OxiCleanarr
 
 ### For Developers (Releasing Updates)
 
@@ -409,18 +409,18 @@ Host manifest.json on your own server:
 Give users this template for their documentation:
 
 ```markdown
-## Installing Prunarr Bridge Plugin
+## Installing OxiCleanarr Bridge Plugin
 
 1. Open Jellyfin → Dashboard → Plugins → Repositories
 2. Click "+" to add a repository
 3. Enter:
-   - Name: `Prunarr Plugin Repository`
-   - URL: `https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/manifest.json`
+   - Name: `OxiCleanarr Plugin Repository`
+   - URL: `https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json`
 4. Save
 5. Go to Dashboard → Plugins → Catalog
-6. Find "Prunarr Bridge" and click Install
+6. Find "OxiCleanarr Bridge" and click Install
 7. Restart Jellyfin
-8. Configure in Dashboard → Plugins → Prunarr Bridge
+8. Configure in Dashboard → Plugins → OxiCleanarr Bridge
 ```
 
 ## Next Steps

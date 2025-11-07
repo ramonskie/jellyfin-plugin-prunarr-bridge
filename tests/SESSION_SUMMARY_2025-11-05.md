@@ -1,12 +1,12 @@
 # Session Summary: November 5, 2025
 
 ## Overview
-Continued work on **Jellyfin Plugin: Prunarr Bridge** - Fixed JPRM build automation and resolved missing settings page issue.
+Continued work on **Jellyfin Plugin: OxiCleanarr Bridge** - Fixed JPRM build automation and resolved missing settings page issue.
 
 ## Completed Tasks
 
 ### 1. JPRM Build Automation Fix (v1.0.3)
-**Issue**: JPRM build was failing with "No such file or directory: './artifacts/prunarr-bridge_1.0.3.0.zip'"
+**Issue**: JPRM build was failing with "No such file or directory: './artifacts/oxicleanarr-bridge_1.0.3.0.zip'"
 
 **Root Cause**: The `./artifacts` directory didn't exist - JPRM doesn't create it automatically.
 
@@ -29,7 +29,7 @@ Continued work on **Jellyfin Plugin: Prunarr Bridge** - Fixed JPRM build automat
 - Created and released **v1.0.4** with the fix
 
 **Files Modified**:
-- `Jellyfin.Plugin.PrunarrBridge/Jellyfin.Plugin.PrunarrBridge.csproj` - Fixed embedded resource configuration
+- `Jellyfin.Plugin.OxiCleanarrBridge/Jellyfin.Plugin.OxiCleanarrBridge.csproj` - Fixed embedded resource configuration
 
 ### 3. API Key Generation
 Generated secure API key for plugin configuration:
@@ -47,7 +47,7 @@ b96b79beb4693a37b72fa0d8c4813e360752f5df3173207c43c30664187b03ae
 
 ### 📋 Configuration Settings Available
 The plugin now has a functional settings page with:
-- **API Key**: For authenticating Prunarr requests (generated above)
+- **API Key**: For authenticating OxiCleanarr requests (generated above)
 - **Symlink Base Path**: Directory for "Leaving Soon" symlinks (default: `/var/lib/jellyfin/leaving-soon`)
 - **Virtual Folder Name**: Name for the virtual library (default: `Leaving Soon`)
 - **Auto-create Virtual Folder**: Toggle to create folder on startup (default: enabled)
@@ -63,8 +63,8 @@ The plugin now has a functional settings page with:
 ```
 test-jelly-plug/
 ├── .github/workflows/build-release.yml      # CI/CD workflow (fixed v1.0.3)
-├── Jellyfin.Plugin.PrunarrBridge/
-│   ├── Api/PrunarrController.cs            # HTTP API endpoints
+├── Jellyfin.Plugin.OxiCleanarrBridge/
+│   ├── Api/OxiCleanarrController.cs            # HTTP API endpoints
 │   ├── Configuration/
 │   │   ├── PluginConfiguration.cs          # Config model
 │   │   └── configPage.html                 # Settings UI (fixed v1.0.4)
@@ -72,7 +72,7 @@ test-jelly-plug/
 │   │   ├── SymlinkManager.cs              # Symlink operations
 │   │   └── VirtualFolderManager.cs        # Virtual folder management
 │   ├── Plugin.cs                          # Main plugin class
-│   ├── Jellyfin.Plugin.PrunarrBridge.csproj  # Project file (fixed v1.0.4)
+│   ├── Jellyfin.Plugin.OxiCleanarrBridge.csproj  # Project file (fixed v1.0.4)
 │   └── build.yaml                         # JPRM metadata
 └── manifest.json                          # Plugin repository manifest
 ```
@@ -90,7 +90,7 @@ f7bc495 - Fix JPRM build: create artifacts directory before building
 - **v1.0.4**: Settings page fix (embedded resource) ⭐ **CURRENT**
 
 ## API Endpoints
-Available at `http://jellyfin-server:port/api/prunarr/`:
+Available at `http://jellyfin-server:port/api/oxicleanarr/`:
 - `POST /leaving-soon/add` - Add items to "Leaving Soon"
 - `POST /leaving-soon/remove` - Remove items from "Leaving Soon"
 - `POST /leaving-soon/clear` - Clear all "Leaving Soon" items
@@ -112,7 +112,7 @@ Authentication: Include API key in request header or query parameter
 3. Add troubleshooting guide for common issues
 
 ### Integration
-1. Integrate with Prunarr/Sonarr/Radarr
+1. Integrate with OxiCleanarr/Sonarr/Radarr
 2. Test webhook integration
 3. Verify "Leaving Soon" workflow end-to-end
 
@@ -124,10 +124,10 @@ Authentication: Include API key in request header or query parameter
 5. Dry-run mode for testing
 
 ## Useful Links
-- **Repository**: https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge
-- **Actions**: https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/actions
-- **Latest Release**: https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/tag/v1.0.4
-- **Manifest URL**: https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/manifest.json
+- **Repository**: https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge
+- **Actions**: https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/actions
+- **Latest Release**: https://github.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/releases/tag/v1.0.4
+- **Manifest URL**: https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
 
 ## Environment Details
 - **Jellyfin Version**: Running in Docker
@@ -150,7 +150,7 @@ Authentication: Include API key in request header or query parameter
 - HTML file must be marked as `EmbeddedResource` in `.csproj`
 - Must include both `<None Remove=.../>` and `<EmbeddedResource Include=.../>` directives
 - Resource path format: `{Namespace}.{FolderPath}.{Filename}`
-- Example: `Jellyfin.Plugin.PrunarrBridge.Configuration.configPage.html`
+- Example: `Jellyfin.Plugin.OxiCleanarrBridge.Configuration.configPage.html`
 
 ### Build Process
 1. GitHub Actions triggers on tag push (v*)
@@ -170,4 +170,4 @@ b96b79beb4693a37b72fa0d8c4813e360752f5df3173207c43c30664187b03ae
 
 **Session Date**: November 5, 2025  
 **Status**: ✅ All major issues resolved, plugin fully functional with settings page  
-**Ready for**: API testing and integration with Prunarr
+**Ready for**: API testing and integration with OxiCleanarr

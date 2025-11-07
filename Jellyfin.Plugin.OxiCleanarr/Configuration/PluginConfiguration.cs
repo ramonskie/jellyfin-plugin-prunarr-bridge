@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.PrunarrBridge.Configuration;
+namespace Jellyfin.Plugin.OxiCleanarr.Configuration;
 
 /// <summary>
 /// Plugin configuration.

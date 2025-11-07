@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Jellyfin.Plugin.PrunarrBridge.Configuration;
+using Jellyfin.Plugin.OxiCleanarr.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace Jellyfin.Plugin.PrunarrBridge;
+namespace Jellyfin.Plugin.OxiCleanarr;
 
 /// <summary>
 /// The main plugin class.
@@ -25,7 +25,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     }
 
     /// <inheritdoc />
-    public override string Name => "Prunarr Bridge";
+    public override string Name => "OxiCleanarr Bridge";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("a8c0f8e4-7d3c-4b5a-9e2f-1a2b3c4d5e6f");

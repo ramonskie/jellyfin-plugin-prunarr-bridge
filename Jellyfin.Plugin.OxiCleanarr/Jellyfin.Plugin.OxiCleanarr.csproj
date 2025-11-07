@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <Version>2.0.0</Version>
-    <Description>Jellyfin plugin for Prunarr integration. Manages symlinks via HTTP API (v2.0: Symlink-only design).</Description>
-    <Company>Prunarr</Company>
-    <Authors>Prunarr Contributors</Authors>
-    <RepositoryUrl>https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge</PackageProjectUrl>
+    <Description>Jellyfin plugin for OxiCleanarr integration. Manages symlinks via HTTP API (v2.0: Symlink-only design).</Description>
+    <Company>OxiCleanarr</Company>
+    <Authors>OxiCleanarr Contributors</Authors>
+    <RepositoryUrl>https://github.com/ramonskie/jellyfin-plugin-oxicleanarr</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ramonskie/jellyfin-plugin-oxicleanarr</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

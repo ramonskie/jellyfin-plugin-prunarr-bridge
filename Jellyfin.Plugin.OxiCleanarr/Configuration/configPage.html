@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>OxiCleanarr Bridge</title>
+</head>
+<body>
+    <div id="OxiCleanarrBridgeConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+        <div data-role="content">
+            <div class="content-primary">
+                <div class="verticalSection">
+                    <h2>OxiCleanarr Bridge</h2>
+                    <p><strong>Billy Mays here!</strong> This plugin is like OxiClean for your media library - it cleans up symlinks with the power of oxygen action!</p>
+                    <p>The OxiCleanarr Bridge plugin manages symlinks via HTTP API. It's stateless and configuration-free!</p>
+                </div>
+
+                <div class="verticalSection">
+                    <h3>API Endpoints</h3>
+                    <ul>
+                        <li><code>POST /api/oxicleanarr/symlinks/add</code> - Create symlinks</li>
+                        <li><code>POST /api/oxicleanarr/symlinks/remove</code> - Remove symlinks</li>
+                        <li><code>GET /api/oxicleanarr/symlinks/list</code> - List all symlinks</li>
+                        <li><code>GET /api/oxicleanarr/status</code> - Get plugin status</li>
+                    </ul>
+                </div>
+
+                <div class="verticalSection">
+                    <h3>Authentication</h3>
+                    <p>This plugin uses Jellyfin's built-in authentication. Use your Jellyfin API key when calling the endpoints.</p>
+                </div>
+
+                <div class="verticalSection">
+                    <h3>Version 2.0 Changes</h3>
+                    <p>This version focuses solely on symlink management (Single Responsibility Principle):</p>
+                    <ul>
+                        <li>✓ No configuration required - completely stateless</li>
+                        <li>✓ All paths provided via API requests</li>
+                        <li>✓ OxiCleanarr handles library management</li>
+                        <li>✓ Simple, focused, powerful - just like OxiClean!</li>
+                    </ul>
+                </div>
+
+                <div class="verticalSection">
+                    <p><em>"But wait, there's more!"</em> For complete API documentation, visit the <a href="https://github.com/ramonskie/jellyfin-plugin-oxicleanarr" target="_blank">GitHub repository</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

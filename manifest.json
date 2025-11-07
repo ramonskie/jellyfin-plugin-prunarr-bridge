@@ -1,18 +1,18 @@
 [
     {
         "guid": "a8c0f8e4-7d3c-4b5a-9e2f-1a2b3c4d5e6f",
-        "name": "Prunarr Bridge",
-        "description": "Jellyfin plugin for Prunarr integration. Manages symlinks via HTTP API. v2.0+ uses simplified design: symlink management only, no library management.",
-        "overview": "Bridge between Prunarr and Jellyfin for managing symlinks",
-        "owner": "prunarr",
+        "name": "OxiCleanarr Bridge",
+        "description": "Jellyfin plugin for OxiCleanarr integration. Manages symlinks via HTTP API. The power of OxiClean, now for your media!",
+        "overview": "OxiClean for your media library - cleans up those tough symlink stains!",
+        "owner": "ramonskie",
         "category": "General",
-        "imageUrl": "https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-prunarr-bridge/main/images/icon.svg",
+        "imageUrl": "https://raw.githubusercontent.com/ramonskie/jellyfin-plugin-oxicleanarr/main/images/icon.svg",
         "versions": [
             {
                 "version": "2.0.0.0",
                 "changelog": "Version 1.0.3\n- Updated to .NET 9.0 and Jellyfin 10.11.2\n- Automated manifest updates with JPRM\n",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v2.0.0/jellyfin-plugin-prunarr-bridge.zip",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr/releases/download/v2.0.0/jellyfin-plugin-oxicleanarr.zip",
                 "checksum": "3ac00f34d45144b2d478ba83309654a6",
                 "timestamp": "2025-11-07T22:03:04Z"
             },
@@ -20,7 +20,7 @@
                 "version": "1.0.4.0",
                 "changelog": "Version 1.0.4\n- Updated to .NET 9.0 and Jellyfin 10.11.2\n- Automated manifest updates with JPRM\n",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.4/jellyfin-plugin-prunarr-bridge.zip",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr/releases/download/v1.0.4/jellyfin-plugin-oxicleanarr.zip",
                 "checksum": "e172e888ecc68bdd3cc4129b4e209ff6",
                 "timestamp": "2025-11-05T20:10:01Z"
             },
@@ -28,7 +28,7 @@
                 "version": "1.0.3.0",
                 "changelog": "Version 1.0.3\n- Updated to .NET 9.0 and Jellyfin 10.11.2\n- Automated manifest updates with JPRM\n",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.3/jellyfin-plugin-prunarr-bridge.zip",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr/releases/download/v1.0.3/jellyfin-plugin-oxicleanarr.zip",
                 "checksum": "7e7b54eb882754341e233075b5ec7a23",
                 "timestamp": "2025-11-05T20:04:31Z"
             },
@@ -36,7 +36,7 @@
                 "version": "1.0.1.0",
                 "changelog": "Fixed plugin registration\n- Added missing configuration page HTML file\n- Plugin now properly appears in Jellyfin plugin list\n- Configuration UI now available with API key, symlink path, and virtual folder settings",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.1/jellyfin-plugin-prunarr-bridge.zip",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr/releases/download/v1.0.1/jellyfin-plugin-oxicleanarr.zip",
                 "checksum": "d08661e0bbbca7affa925a8b393141f4",
                 "timestamp": "2025-11-05T18:43:43Z"
             },
@@ -44,7 +44,7 @@
                 "version": "1.0.0.0",
                 "changelog": "Initial release\n- HTTP API endpoints for managing 'Leaving Soon' items\n- Automatic Virtual Folder creation and management\n- Symlink creation for media files\n- API key authentication\n- Support for movies, TV shows, and mixed collections",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-prunarr-bridge/releases/download/v1.0.0/jellyfin-plugin-prunarr-bridge.zip",
+                "sourceUrl": "https://github.com/ramonskie/jellyfin-plugin-oxicleanarr/releases/download/v1.0.0/jellyfin-plugin-oxicleanarr.zip",
                 "checksum": "017e256048f9f8637fe51ab95a83ad88",
                 "timestamp": "2025-11-05T17:58:11Z"
             }

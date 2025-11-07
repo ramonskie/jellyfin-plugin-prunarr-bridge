@@ -30,9 +30,9 @@ echo "✓ Authenticated successfully"
 echo ""
 
 echo "Test: Removing test movie (deleting symlink)..."
-echo "Request: POST $JELLYFIN_URL/api/prunarr/symlinks/remove"
+echo "Request: POST $JELLYFIN_URL/api/oxicleanarr/symlinks/remove"
 echo ""
-REMOVE_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/prunarr/symlinks/remove" \
+REMOVE_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/symlinks/remove" \
     -H "Content-Type: application/json" \
     -H "X-Emby-Token: $TOKEN" \
     -d '{
@@ -68,7 +68,7 @@ echo ""
 
 # Add the movie back first
 echo "Adding movie back..."
-curl -s -X POST "$JELLYFIN_URL/api/prunarr/symlinks/add" \
+curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/symlinks/add" \
     -H "Content-Type: application/json" \
     -H "X-Emby-Token: $TOKEN" \
     -d '{
@@ -83,7 +83,7 @@ echo "✓ Movie added back"
 
 echo ""
 echo "Listing all symlinks..."
-LIST_RESPONSE=$(curl -s "$JELLYFIN_URL/api/prunarr/symlinks/list?directory=/data/leaving-soon" -H "X-Emby-Token: $TOKEN")
+LIST_RESPONSE=$(curl -s "$JELLYFIN_URL/api/oxicleanarr/symlinks/list?directory=/data/leaving-soon" -H "X-Emby-Token: $TOKEN")
 echo "Response:"
 echo "$LIST_RESPONSE" | jq . 2>/dev/null || echo "$LIST_RESPONSE"
 echo ""

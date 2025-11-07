@@ -36,7 +36,7 @@ This will:
      - Click OK
    - Finish setup
 
-**Note**: The plugin **no longer** auto-creates libraries. You must manually create the "Leaving Soon" library during setup, or Prunarr must create it via the Jellyfin API.
+**Note**: The plugin **no longer** auto-creates libraries. You must manually create the "Leaving Soon" library during setup, or OxiCleanarr must create it via the Jellyfin API.
 
 **Note**: The test scripts default to username `test` and password `test`. You can override these:
 ```bash
@@ -105,10 +105,10 @@ export JELLYFIN_PASS=yourpassword
 docker logs jellyfin-test -f
 
 # Check if plugin is loaded
-curl http://localhost:8096/api/prunarr/status
+curl http://localhost:8096/api/oxicleanarr/status
 
 # Check plugin installation
-docker exec jellyfin-test ls -lah /config/plugins/PrunarrBridge/
+docker exec jellyfin-test ls -lah /config/plugins/OxiCleanarrBridge/
 ```
 
 **Symlink Issues**:
@@ -124,11 +124,11 @@ ls -lah leaving-soon-data/
 
 **The plugin requires NO configuration!** (v2.0+)
 
-The plugin is completely stateless. All paths (target directories) are provided via API requests. Prunarr is in complete control of where symlinks are created.
+The plugin is completely stateless. All paths (target directories) are provided via API requests. OxiCleanarr is in complete control of where symlinks are created.
 
 **Removed in v2.0** (breaking changes):
 - ~~Symlink Base Path~~ - Target directory now provided in each API request
-- ~~Virtual Folder Name~~ - Libraries must be created manually or by Prunarr
+- ~~Virtual Folder Name~~ - Libraries must be created manually or by OxiCleanarr
 - ~~Auto Create Virtual Folder~~ - Plugin no longer manages libraries
 
 The plugin uses Jellyfin's built-in authentication. Any authenticated Jellyfin user can call the API endpoints using their API token.

@@ -38,24 +38,24 @@ jobs:
         mkdir -p ./artifacts
         # Build plugin using JPRM (creates ZIP with metadata)
         # JPRM outputs the filename to stdout
-        PLUGIN_FILE=$(jprm plugin build Jellyfin.Plugin.PrunarrBridge --output ./artifacts --version "$VERSION")
+        PLUGIN_FILE=$(jprm plugin build Jellyfin.Plugin.OxiCleanarr --output ./artifacts --version "$VERSION")
         echo "Built plugin: $PLUGIN_FILE"
         # Move to expected location
-        mv "$PLUGIN_FILE" ./jellyfin-plugin-prunarr-bridge.zip
+        mv "$PLUGIN_FILE" ./jellyfin-plugin-oxicleanarr.zip
         
     - name: Generate checksums
       run: |
-        md5sum jellyfin-plugin-prunarr-bridge.zip > jellyfin-plugin-prunarr-bridge.zip.md5
-        sha256sum jellyfin-plugin-prunarr-bridge.zip > jellyfin-plugin-prunarr-bridge.zip.sha256
+        md5sum jellyfin-plugin-oxicleanarr.zip > jellyfin-plugin-oxicleanarr.zip.md5
+        sha256sum jellyfin-plugin-oxicleanarr.zip > jellyfin-plugin-oxicleanarr.zip.sha256
         
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: plugin-artifacts
         path: |
-          jellyfin-plugin-prunarr-bridge.zip
-          jellyfin-plugin-prunarr-bridge.zip.md5
-          jellyfin-plugin-prunarr-bridge.zip.sha256
+          jellyfin-plugin-oxicleanarr.zip
+          jellyfin-plugin-oxicleanarr.zip.md5
+          jellyfin-plugin-oxicleanarr.zip.sha256
           
     - name: Create GitHub Release
       id: create_release
@@ -63,23 +63,27 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          jellyfin-plugin-prunarr-bridge.zip
-          jellyfin-plugin-prunarr-bridge.zip.md5
-          jellyfin-plugin-prunarr-bridge.zip.sha256
+          jellyfin-plugin-oxicleanarr.zip
+          jellyfin-plugin-oxicleanarr.zip.md5
+          jellyfin-plugin-oxicleanarr.zip.sha256
         body: |
-          ## Jellyfin Plugin: Prunarr Bridge ${{ github.ref_name }}
+          ## Jellyfin Plugin: OxiCleanarr Bridge ${{ github.ref_name }}
+          
+          ### 🧹 BUT WAIT, THERE'S MORE! 🧹
+          
+          OxiClean for your media library! This plugin cleans up those tough symlink stains that other plugins leave behind!
           
           ### Installation
           
           1. In Jellyfin, go to **Dashboard** → **Plugins** → **Repositories**
           2. Add this repository URL: `https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json`
-          3. Go to **Catalog** and install "Prunarr Bridge"
+          3. Go to **Catalog** and install "OxiCleanarr Bridge"
           4. Restart Jellyfin
-          5. Configure the plugin in **Dashboard** → **Plugins** → **Prunarr Bridge**
+          5. Configure the plugin in **Dashboard** → **Plugins** → **OxiCleanarr Bridge**
           
           ### Manual Installation
           
-          1. Download `jellyfin-plugin-prunarr-bridge.zip`
+          1. Download `jellyfin-plugin-oxicleanarr.zip`
           2. Extract the DLL to your Jellyfin plugins directory
           3. Restart Jellyfin
           
@@ -88,13 +92,14 @@ jobs:
           - HTTP API for symlink management
           - API key authentication
           - List, add, and remove symlinks
+          - The power of OxiClean in plugin form!
           
           ### API Endpoints
           
-          - `POST /api/prunarr/symlinks/add` - Create symlink
-          - `POST /api/prunarr/symlinks/remove` - Remove symlink
-          - `GET /api/prunarr/symlinks/list` - List all symlinks
-          - `GET /api/prunarr/status` - Get plugin status
+          - `POST /api/oxicleanarr/symlinks/add` - Create symlink
+          - `POST /api/oxicleanarr/symlinks/remove` - Remove symlink
+          - `GET /api/oxicleanarr/symlinks/list` - List all symlinks
+          - `GET /api/oxicleanarr/status` - Get plugin status
           
           See the [API Documentation](https://github.com/${{ github.repository }}/blob/main/API.md) for detailed instructions.
         draft: false
@@ -107,7 +112,7 @@ jobs:
       run: |
         # Run JPRM to add this release to the manifest using the local ZIP file
         # JPRM will read metadata from the ZIP and use the provided URL in the manifest
-        jprm repo add --plugin-url https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/jellyfin-plugin-prunarr-bridge.zip . jellyfin-plugin-prunarr-bridge.zip
+        jprm repo add --plugin-url https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/jellyfin-plugin-oxicleanarr.zip . jellyfin-plugin-oxicleanarr.zip
         
     - name: Commit and push updated manifest
       if: startsWith(github.ref, 'refs/tags/')

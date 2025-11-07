@@ -4,34 +4,34 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.PrunarrBridge.Services;
+using Jellyfin.Plugin.OxiCleanarr.Services;
 using MediaBrowser.Controller.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.PrunarrBridge.Api;
+namespace Jellyfin.Plugin.OxiCleanarr.Api;
 
 /// <summary>
-/// API Controller for Prunarr Bridge plugin.
+/// API Controller for OxiCleanarr Bridge plugin.
 /// </summary>
 [ApiController]
-[Route("api/prunarr")]
+[Route("api/oxicleanarr")]
 [Produces(MediaTypeNames.Application.Json)]
-public class PrunarrController : ControllerBase
+public class OxiCleanarrController : ControllerBase
 {
-    private readonly ILogger<PrunarrController> _logger;
+    private readonly ILogger<OxiCleanarrController> _logger;
     private readonly SymlinkManager _symlinkManager;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PrunarrController"/> class.
+    /// Initializes a new instance of the <see cref="OxiCleanarrController"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="libraryManager">The library manager.</param>
     /// <param name="loggerFactory">The logger factory.</param>
-    public PrunarrController(
-        ILogger<PrunarrController> logger,
+    public OxiCleanarrController(
+        ILogger<OxiCleanarrController> logger,
         ILibraryManager libraryManager,
         ILoggerFactory loggerFactory)
     {

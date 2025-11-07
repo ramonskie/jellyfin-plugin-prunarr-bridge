@@ -1,8 +1,8 @@
-# Jellyfin Prunarr Bridge Plugin - API Documentation
+# Jellyfin OxiCleanarr Bridge Plugin - API Documentation
 
 ## Overview
 
-The Jellyfin Prunarr Bridge Plugin provides a minimal, focused API for managing symlinks. The plugin is **completely stateless and configuration-free** - all paths are provided via API requests.
+The Jellyfin OxiCleanarr Bridge Plugin provides a minimal, focused API for managing symlinks. The plugin is **completely stateless and configuration-free** - all paths are provided via API requests.
 
 ## Design Philosophy
 
@@ -21,17 +21,17 @@ The Jellyfin Prunarr Bridge Plugin provides a minimal, focused API for managing 
 - ❌ Manage media metadata
 - ❌ Handle business logic
 
-**Prunarr is in complete control** - it knows all paths, manages all state, and orchestrates all operations.
+**OxiCleanarr is in complete control** - it knows all paths, manages all state, and orchestrates all operations.
 
 ## Authentication
 
 All endpoints except `/status` require authentication using Jellyfin's built-in authentication system.
 
-### Using API Keys (Recommended for Prunarr)
+### Using API Keys (Recommended for OxiCleanarr)
 
 ```bash
 # Create API key in Jellyfin: Dashboard → API Keys
-curl -H "X-Emby-Token: your-api-key-here" http://localhost:8096/api/prunarr/...
+curl -H "X-Emby-Token: your-api-key-here" http://localhost:8096/api/oxicleanarr/...
 ```
 
 ### Using Session Tokens (For Testing)
@@ -44,12 +44,12 @@ curl -X POST http://localhost:8096/Users/AuthenticateByName \
   -d '{"Username":"your-user","Pw":"your-pass"}'
 
 # 2. Use returned AccessToken
-curl -H "X-Emby-Token: session-token" http://localhost:8096/api/prunarr/...
+curl -H "X-Emby-Token: session-token" http://localhost:8096/api/oxicleanarr/...
 ```
 
 ## Endpoints
 
-### GET /api/prunarr/status
+### GET /api/oxicleanarr/status
 
 Get plugin version.
 
@@ -64,12 +64,12 @@ Get plugin version.
 
 **Example:**
 ```bash
-curl http://localhost:8096/api/prunarr/status
+curl http://localhost:8096/api/oxicleanarr/status
 ```
 
 ---
 
-### POST /api/prunarr/symlinks/add
+### POST /api/oxicleanarr/symlinks/add
 
 Create symlinks for media files.
 
@@ -105,7 +105,7 @@ Create symlinks for media files.
 
 **Example:**
 ```bash
-curl -X POST http://localhost:8096/api/prunarr/symlinks/add \
+curl -X POST http://localhost:8096/api/oxicleanarr/symlinks/add \
   -H "Content-Type: application/json" \
   -H "X-Emby-Token: your-token" \
   -d '{
@@ -123,7 +123,7 @@ curl -X POST http://localhost:8096/api/prunarr/symlinks/add \
 ```
 
 **Notes:**
-- **targetDirectory** is required for each item - Prunarr specifies where to create the symlink
+- **targetDirectory** is required for each item - OxiCleanarr specifies where to create the symlink
 - If symlink already exists, it will be replaced
 - Target directory is created automatically if it doesn't exist
 - Each item is processed independently - partial success is possible
@@ -131,7 +131,7 @@ curl -X POST http://localhost:8096/api/prunarr/symlinks/add \
 
 ---
 
-### POST /api/prunarr/symlinks/remove
+### POST /api/oxicleanarr/symlinks/remove
 
 Remove symlinks.
 
@@ -164,7 +164,7 @@ Remove symlinks.
 
 **Example:**
 ```bash
-curl -X POST http://localhost:8096/api/prunarr/symlinks/remove \
+curl -X POST http://localhost:8096/api/oxicleanarr/symlinks/remove \
   -H "Content-Type: application/json" \
   -H "X-Emby-Token: your-token" \
   -d '{
@@ -182,7 +182,7 @@ curl -X POST http://localhost:8096/api/prunarr/symlinks/remove \
 
 ---
 
-### GET /api/prunarr/symlinks/list
+### GET /api/oxicleanarr/symlinks/list
 
 List all symlinks in a specified directory.
 
@@ -213,15 +213,15 @@ List all symlinks in a specified directory.
 
 **Example:**
 ```bash
-curl "http://localhost:8096/api/prunarr/symlinks/list?directory=/data/leaving-soon" \
+curl "http://localhost:8096/api/oxicleanarr/symlinks/list?directory=/data/leaving-soon" \
   -H "X-Emby-Token: your-token"
 ```
 
 **Notes:**
-- **directory** parameter is required - Prunarr specifies which directory to list
+- **directory** parameter is required - OxiCleanarr specifies which directory to list
 - Only returns actual symlinks (not regular files)
 - Returns empty array if directory doesn't exist or is empty
-- Useful for Prunarr to verify current state
+- Useful for OxiCleanarr to verify current state
 
 ---
 
@@ -229,18 +229,18 @@ curl "http://localhost:8096/api/prunarr/symlinks/list?directory=/data/leaving-so
 
 **The plugin requires NO configuration!** It is completely stateless.
 
-All paths are provided via API requests. Prunarr is in complete control of where symlinks are created.
+All paths are provided via API requests. OxiCleanarr is in complete control of where symlinks are created.
 
 ---
 
-## Prunarr Integration Guide
+## OxiCleanarr Integration Guide
 
 ### Recommended Workflow
 
 ```python
 # 1. Create symlink via plugin
 response = requests.post(
-    "http://jellyfin:8096/api/prunarr/symlinks/add",
+    "http://jellyfin:8096/api/oxicleanarr/symlinks/add",
     headers={"X-Emby-Token": api_key},
     json={"items": [{
         "sourcePath": movie_path,
@@ -251,17 +251,17 @@ response = requests.post(
 if not response.json()["Success"]:
     handle_error()
 
-# 2. Ensure library exists (Prunarr's responsibility)
+# 2. Ensure library exists (OxiCleanarr's responsibility)
 if not library_exists("Leaving Soon"):
     create_library("Leaving Soon", "/data/leaving-soon")
 
-# 3. Trigger library scan (Prunarr's responsibility)
+# 3. Trigger library scan (OxiCleanarr's responsibility)
 scan_library("Leaving Soon")
 ```
 
 ### Creating the Library (One-Time Setup)
 
-Prunarr should create the "Leaving Soon" library on first use:
+OxiCleanarr should create the "Leaving Soon" library on first use:
 
 ```bash
 # Via Jellyfin API
@@ -275,7 +275,7 @@ POST /Library/VirtualFolders
 
 ### Triggering Library Scan
 
-After adding/removing symlinks, Prunarr should trigger a scan:
+After adding/removing symlinks, OxiCleanarr should trigger a scan:
 
 ```bash
 # Scan specific library
@@ -289,27 +289,27 @@ POST /Library/Refresh
 ### Breaking Changes
 
 **Removed Endpoints:**
-- `POST /api/prunarr/leaving-soon/clear` - Use `/symlinks/remove` for each item instead
+- `POST /api/oxicleanarr/leaving-soon/clear` - Use `/symlinks/remove` for each item instead
 
 **Renamed Endpoints:**
-- `POST /api/prunarr/leaving-soon/add` → `POST /api/prunarr/symlinks/add`
-- `POST /api/prunarr/leaving-soon/remove` → `POST /api/prunarr/symlinks/remove`
+- `POST /api/oxicleanarr/leaving-soon/add` → `POST /api/oxicleanarr/symlinks/add`
+- `POST /api/oxicleanarr/leaving-soon/remove` → `POST /api/oxicleanarr/symlinks/remove`
 
 **Removed Configuration:**
-- `AutoCreateVirtualFolder` - Prunarr must create library
-- `VirtualFolderName` - Prunarr manages library name
+- `AutoCreateVirtualFolder` - OxiCleanarr must create library
+- `VirtualFolderName` - OxiCleanarr manages library name
 - `SymlinkBasePath` - Target directory now provided in each API request
 
 **Removed Behavior:**
 - Plugin no longer creates or manages Jellyfin libraries
 - Plugin no longer triggers library scans
-- Prunarr is now responsible for library lifecycle
+- OxiCleanarr is now responsible for library lifecycle
 
 ### Migration Steps
 
-1. Update API endpoint URLs in Prunarr
-2. Implement library management in Prunarr
-3. Implement library scanning in Prunarr after batch operations
+1. Update API endpoint URLs in OxiCleanarr
+2. Implement library management in OxiCleanarr
+3. Implement library scanning in OxiCleanarr after batch operations
 4. Remove old configuration options
 
 ---
@@ -386,6 +386,6 @@ Run tests:
 
 For issues or questions:
 - Check logs: `docker logs jellyfin-test -f`
-- Verify plugin is loaded: `GET /api/prunarr/status`
+- Verify plugin is loaded: `GET /api/oxicleanarr/status`
 - Check authentication: Ensure valid API key or session token
 - Review filesystem permissions: Plugin runs as Jellyfin user

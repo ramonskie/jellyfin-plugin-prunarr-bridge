@@ -44,7 +44,7 @@ fi
 # Step 2: Create directories
 echo ""
 echo "Step 2: Setting up directories..."
-mkdir -p jellyfin-config/plugins/PrunarrBridge
+mkdir -p jellyfin-config/plugins/OxiCleanarr
 mkdir -p jellyfin-cache
 mkdir -p "$LEAVING_SOON_DIR"
 print_status "Directories created"
@@ -52,7 +52,7 @@ print_status "Directories created"
 # Step 3: Build the plugin
 echo ""
 echo "Step 3: Building the plugin..."
-cd Jellyfin.Plugin.PrunarrBridge
+cd Jellyfin.Plugin.OxiCleanarr
 if ! dotnet build --configuration Release; then
     print_error "Failed to build plugin"
     exit 1
@@ -64,13 +64,13 @@ cd ..
 echo ""
 echo "Step 4: Installing plugin to Jellyfin..."
 # Find the built DLL (it may be in net7.0 or net8.0 directory)
-PLUGIN_DLL=$(find Jellyfin.Plugin.PrunarrBridge/bin/Release -name "Jellyfin.Plugin.PrunarrBridge.dll" | head -1)
+PLUGIN_DLL=$(find Jellyfin.Plugin.OxiCleanarr/bin/Release -name "Jellyfin.Plugin.OxiCleanarr.dll" | head -1)
 if [ -z "$PLUGIN_DLL" ]; then
     print_error "Could not find built plugin DLL"
     exit 1
 fi
-cp "$PLUGIN_DLL" jellyfin-config/plugins/PrunarrBridge/
-print_status "Plugin installed to: jellyfin-config/plugins/PrunarrBridge/"
+cp "$PLUGIN_DLL" jellyfin-config/plugins/OxiCleanarr/
+print_status "Plugin installed to: jellyfin-config/plugins/OxiCleanarr/"
 
 # Step 5: Update docker-compose with correct paths
 echo ""
@@ -139,7 +139,7 @@ print_info "Please open $JELLYFIN_URL in your browser and:"
 print_info "1. Complete the initial setup wizard (if first time)"
 print_info "2. Login as administrator"
 print_info "3. Go to Dashboard → Plugins"
-print_info "4. Verify 'Prunarr Bridge' plugin is listed"
+print_info "4. Verify 'OxiCleanarr Bridge' plugin is listed"
 print_info "5. Configure the plugin:"
 print_info "   - No configuration needed! Plugin is now stateless."
 echo ""
@@ -150,7 +150,7 @@ echo ""
 echo "Step 9: Testing the plugin API..."
 echo ""
 print_info "Testing status endpoint..."
-STATUS_RESPONSE=$(curl -s "$JELLYFIN_URL/api/prunarr/status" || echo "FAILED")
+STATUS_RESPONSE=$(curl -s "$JELLYFIN_URL/api/oxicleanarr/status" || echo "FAILED")
 echo "$STATUS_RESPONSE"
 if echo "$STATUS_RESPONSE" | grep -q "version"; then
     print_status "Status endpoint working"
@@ -161,7 +161,7 @@ fi
 # Step 10: Add test movie to Leaving Soon
 echo ""
 echo "Step 10: Adding test movie to 'Leaving Soon' library..."
-ADD_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/prunarr/symlinks/add" \
+ADD_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/symlinks/add" \
     -H "Content-Type: application/json" \
     -d "{
         \"items\": [
@@ -222,7 +222,7 @@ echo "Check symlinks inside container:"
 echo "  docker exec jellyfin-test ls -lah /data/leaving-soon/"
 echo ""
 echo "Test API manually:"
-echo "  curl $JELLYFIN_URL/api/prunarr/status"
+echo "  curl $JELLYFIN_URL/api/oxicleanarr/status"
 echo ""
 echo "Clean up test environment:"
 echo "  docker-compose -f docker-compose.test.yml down"

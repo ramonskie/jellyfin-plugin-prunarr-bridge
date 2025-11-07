@@ -1,14 +1,14 @@
-# Jellyfin Plugin for Prunarr
+# Jellyfin Plugin for OxiCleanarr
 
-A native Jellyfin plugin that enables Prunarr to manage "Leaving Soon" media visibility through symlinks via HTTP API.
+A native Jellyfin plugin that enables OxiCleanarr to manage "Leaving Soon" media visibility through symlinks via HTTP API.
 
 ## Problem
 
-Prunarr currently requires direct filesystem access to create symlinks to media files that are approaching deletion. This creates deployment complexity with Docker volume mappings and path translation issues.
+OxiCleanarr currently requires direct filesystem access to create symlinks to media files that are approaching deletion. This creates deployment complexity with Docker volume mappings and path translation issues.
 
 ## Solution
 
-This Jellyfin plugin moves symlink management into Jellyfin's filesystem context, exposing HTTP APIs that Prunarr can call. The plugin follows the Single Responsibility Principle: it **only manages symlinks**. Library management and scanning remain the responsibility of Prunarr.
+This Jellyfin plugin moves symlink management into Jellyfin's filesystem context, exposing HTTP APIs that OxiCleanarr can call. The plugin follows the Single Responsibility Principle: it **only manages symlinks**. Library management and scanning remain the responsibility of OxiCleanarr.
 
 ## Features
 
@@ -17,7 +17,7 @@ This Jellyfin plugin moves symlink management into Jellyfin's filesystem context
 - **Minimal scope:** Only manages symlinks (create, remove, list)
 - Completely stateless - all paths provided via API requests
 - Uses Jellyfin's built-in authentication
-- Prunarr handles library management and scanning
+- OxiCleanarr handles library management and scanning
 
 ## Installation
 
@@ -28,11 +28,11 @@ Add the plugin repository to Jellyfin:
 1. Open Jellyfin → **Dashboard** → **Plugins** → **Repositories**
 2. Click **"+"** to add a repository
 3. Enter:
-   - **Repository Name**: `Prunarr Plugin Repository`
-   - **Repository URL**: `https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-prunarr-bridge/main/manifest.json`
+   - **Repository Name**: `OxiCleanarr Plugin Repository`
+   - **Repository URL**: `https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json`
 4. Click **Save**
 5. Go to **Dashboard** → **Plugins** → **Catalog**
-6. Find "Prunarr Bridge" and click **Install**
+6. Find "OxiCleanarr Bridge" and click **Install**
 7. Restart Jellyfin when prompted
 
 ### Manual Installation
@@ -51,7 +51,7 @@ The plugin follows the **Single Responsibility Principle**:
 - ✅ List symlinks
 - ✅ Health check
 
-**Prunarr Responsibilities:**
+**OxiCleanarr Responsibilities:**
 - ✅ Create/manage Jellyfin libraries
 - ✅ Trigger library scans
 - ✅ Orchestrate workflow
@@ -62,10 +62,10 @@ The plugin follows the **Single Responsibility Principle**:
 ```bash
 # 1. Add plugin repository to Jellyfin
 # Dashboard → Plugins → Repositories → Add
-# URL: https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-prunarr-bridge/main/manifest.json
+# URL: https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
 
 # 2. Install plugin from catalog
-# Dashboard → Plugins → Catalog → Find "Prunarr Bridge" → Install
+# Dashboard → Plugins → Catalog → Find "OxiCleanarr Bridge" → Install
 
 # 3. Restart Jellyfin
 
@@ -90,12 +90,12 @@ Complete API documentation: [API.md](API.md)
 
 ### Health Check
 ```bash
-GET /api/prunarr/status
+GET /api/oxicleanarr/status
 ```
 
 ### Create Symlinks
 ```bash
-POST /api/prunarr/symlinks/add
+POST /api/oxicleanarr/symlinks/add
 Content-Type: application/json
 X-Emby-Token: your-jellyfin-api-token
 
@@ -111,7 +111,7 @@ X-Emby-Token: your-jellyfin-api-token
 
 ### Remove Symlinks
 ```bash
-POST /api/prunarr/symlinks/remove
+POST /api/oxicleanarr/symlinks/remove
 Content-Type: application/json
 X-Emby-Token: your-jellyfin-api-token
 
@@ -122,7 +122,7 @@ X-Emby-Token: your-jellyfin-api-token
 
 ### List Symlinks
 ```bash
-GET /api/prunarr/symlinks/list?directory=/data/leaving-soon
+GET /api/oxicleanarr/symlinks/list?directory=/data/leaving-soon
 X-Emby-Token: your-jellyfin-api-token
 ```
 
@@ -148,9 +148,9 @@ X-Emby-Token: your-jellyfin-api-token
 
 ```
 .
-├── Jellyfin.Plugin.PrunarrBridge/    # C# Plugin
+├── Jellyfin.Plugin.OxiCleanarrBridge/    # C# Plugin
 │   ├── Api/
-│   │   └── PrunarrController.cs      # REST API endpoints
+│   │   └── OxiCleanarrController.cs      # REST API endpoints
 │   ├── Configuration/
 │   │   ├── configPage.html           # Configuration UI
 │   │   └── PluginConfiguration.cs    # Plugin settings
@@ -179,7 +179,7 @@ X-Emby-Token: your-jellyfin-api-token
 - ✅ Comprehensive API documentation
 - ✅ Test suite with automated scripts
 - ✅ Production-ready
-- ⏳ Integration with Prunarr - Pending
+- ⏳ Integration with OxiCleanarr - Pending
 - ⏳ Community testing - Pending
 
 ## Requirements
@@ -191,14 +191,14 @@ X-Emby-Token: your-jellyfin-api-token
 
 ## Contributing
 
-This is a proof-of-concept for evaluating integration approaches. Once the recommended approach is selected and integrated into Prunarr, contributions will be welcome.
+This is a proof-of-concept for evaluating integration approaches. Once the recommended approach is selected and integrated into OxiCleanarr, contributions will be welcome.
 
 ## Architecture
 
 ### Before: Direct Filesystem Access (Problem)
 ```
 ┌─────────┐     Volume     ┌──────────┐
-│ Prunarr │────Mapping─────│ Jellyfin │
+│ OxiCleanarr │────Mapping─────│ Jellyfin │
 └─────────┘                └──────────┘
      │                           │
      │ Create symlinks           │
@@ -214,7 +214,7 @@ This is a proof-of-concept for evaluating integration approaches. Once the recom
 ### After: Plugin API (Solution)
 ```
 ┌─────────┐   HTTP API   ┌──────────────────┐
-│ Prunarr │─────────────▶│ Jellyfin Plugin  │
+│ OxiCleanarr │─────────────▶│ Jellyfin Plugin  │
 └─────────┘              └──────────────────┘
      │                           │
      │                           │ Create symlinks
@@ -232,11 +232,11 @@ This is a proof-of-concept for evaluating integration approaches. Once the recom
 
 ## License
 
-This is a proof-of-concept project. License to be determined when integrated into Prunarr.
+This is a proof-of-concept project. License to be determined when integrated into OxiCleanarr.
 
 ## Related Projects
 
-- **Prunarr** - Media cleanup tool for Plex/Jellyfin/Emby
+- **OxiCleanarr** - Media cleanup tool for Plex/Jellyfin/Emby
 - **Jellyfin** - Free software media system
 
 ## Support
@@ -249,7 +249,7 @@ For questions or issues:
 
 ## Next Steps
 
-1. **Integration**: Integrate plugin into Prunarr codebase
+1. **Integration**: Integrate plugin into OxiCleanarr codebase
 2. **Testing**: End-to-end testing with real Jellyfin instances
-3. **Documentation**: Update Prunarr docs with new deployment method
-4. **Community**: Beta testing with Prunarr users
+3. **Documentation**: Update OxiCleanarr docs with new deployment method
+4. **Community**: Beta testing with OxiCleanarr users

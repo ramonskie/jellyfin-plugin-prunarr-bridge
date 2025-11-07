@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-# Build script for Jellyfin.Plugin.PrunarrBridge
+# Build script for Jellyfin.Plugin.OxiCleanarr
 # This script builds the plugin DLL and prepares it for release
 
-PROJECT_DIR="Jellyfin.Plugin.PrunarrBridge"
-VERSION="${1:-1.0.0}"
+PROJECT_DIR="Jellyfin.Plugin.OxiCleanarr"
+VERSION="${1:-3.0.0}"
 OUTPUT_DIR="build"
 
-echo "Building Jellyfin.Plugin.PrunarrBridge v${VERSION}"
+echo "Building Jellyfin.Plugin.OxiCleanarr v${VERSION}"
 echo "================================================"
 
 # Clean previous builds
@@ -28,19 +28,19 @@ dotnet build --configuration Release --output "../${OUTPUT_DIR}"
 # Create a zip file for the release
 echo "Creating release package..."
 cd "../${OUTPUT_DIR}"
-zip -r "../Jellyfin.Plugin.PrunarrBridge-${VERSION}.zip" *.dll
+zip -r "../Jellyfin.Plugin.OxiCleanarr-${VERSION}.zip" *.dll
 
 # Generate checksum
 echo "Generating checksum..."
 cd ..
-md5sum "Jellyfin.Plugin.PrunarrBridge-${VERSION}.zip" > "Jellyfin.Plugin.PrunarrBridge-${VERSION}.md5"
+md5sum "Jellyfin.Plugin.OxiCleanarr-${VERSION}.zip" > "Jellyfin.Plugin.OxiCleanarr-${VERSION}.md5"
 
 echo ""
 echo "Build complete!"
 echo "================================================"
 echo "DLL location: ${OUTPUT_DIR}/"
-echo "Release package: Jellyfin.Plugin.PrunarrBridge-${VERSION}.zip"
-echo "Checksum: $(cat Jellyfin.Plugin.PrunarrBridge-${VERSION}.md5)"
+echo "Release package: Jellyfin.Plugin.OxiCleanarr-${VERSION}.zip"
+echo "Checksum: $(cat Jellyfin.Plugin.OxiCleanarr-${VERSION}.md5)"
 echo ""
 echo "Next steps:"
 echo "1. Upload the ZIP file to GitHub releases"
