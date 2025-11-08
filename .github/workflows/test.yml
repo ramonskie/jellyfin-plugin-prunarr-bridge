@@ -65,11 +65,11 @@ jobs:
         run: dotnet build --configuration Release Jellyfin.Plugin.OxiCleanarr/Jellyfin.Plugin.OxiCleanarr.csproj
 
       - name: Package with JPRM
-        run: jprm --verbosity=debug plugin build Jellyfin.Plugin.OxiCleanarr --output=artifacts --version=test
+        run: jprm --verbosity=debug plugin build Jellyfin.Plugin.OxiCleanarr --output=artifacts --version=0.0.0
 
       - name: Verify artifact exists
         run: |
-          if [ ! -f artifacts/jellyfin-plugin-oxicleanarr_test.zip ]; then
+          if [ ! -f artifacts/jellyfin-plugin-oxicleanarr_0.0.0.zip ]; then
             echo "ERROR: Package artifact not created"
             exit 1
           fi
