@@ -69,7 +69,9 @@ jobs:
 
       - name: Verify artifact exists
         run: |
-          if [ ! -f artifacts/jellyfin-plugin-oxicleanarr_0.0.0.zip ]; then
+          ls -la artifacts/
+          # JPRM creates filename from plugin name in build.yaml (oxicleanarr-bridge)
+          if [ ! -f artifacts/oxicleanarr-bridge_0.0.0.0.zip ]; then
             echo "ERROR: Package artifact not created"
             exit 1
           fi
@@ -78,5 +80,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: jellyfin-plugin-oxicleanarr-test
+          name: oxicleanarr-bridge-test
           path: artifacts/*.zip
