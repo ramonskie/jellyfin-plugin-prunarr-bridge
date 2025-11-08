@@ -11,8 +11,14 @@ namespace Jellyfin.Plugin.OxiCleanarr;
 /// <summary>
 /// The main plugin class.
 /// </summary>
+#pragma warning disable SA1201 // Elements should appear in correct order - Instance property pattern
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
+    /// <summary>
+    /// Gets the current plugin instance.
+    /// </summary>
+    public static Plugin? Instance { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Plugin"/> class.
     /// </summary>
@@ -25,15 +31,10 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     }
 
     /// <inheritdoc />
-    public override string Name => "OxiCleanarr Bridge";
-
-    /// <inheritdoc />
     public override Guid Id => Guid.Parse("a8c0f8e4-7d3c-4b5a-9e2f-1a2b3c4d5e6f");
 
-    /// <summary>
-    /// Gets the current plugin instance.
-    /// </summary>
-    public static Plugin? Instance { get; private set; }
+    /// <inheritdoc />
+    public override string Name => "OxiCleanarr Bridge";
 
     /// <inheritdoc />
     public IEnumerable<PluginPageInfo> GetPages()

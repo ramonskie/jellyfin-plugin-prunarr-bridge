@@ -5,7 +5,6 @@ using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.OxiCleanarr.Services;
-using MediaBrowser.Controller.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +16,7 @@ namespace Jellyfin.Plugin.OxiCleanarr.Api;
 /// API Controller for OxiCleanarr Bridge plugin.
 /// </summary>
 [ApiController]
+[Authorize(Policy = "RequiresElevation")]
 [Route("api/oxicleanarr")]
 [Produces(MediaTypeNames.Application.Json)]
 public class OxiCleanarrController : ControllerBase
@@ -28,15 +28,13 @@ public class OxiCleanarrController : ControllerBase
     /// Initializes a new instance of the <see cref="OxiCleanarrController"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="libraryManager">The library manager.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="symlinkManager">The symlink manager.</param>
     public OxiCleanarrController(
         ILogger<OxiCleanarrController> logger,
-        ILibraryManager libraryManager,
-        ILoggerFactory loggerFactory)
+        SymlinkManager symlinkManager)
     {
         _logger = logger;
-        _symlinkManager = new SymlinkManager(loggerFactory.CreateLogger<SymlinkManager>(), libraryManager);
+        _symlinkManager = symlinkManager;
     }
 
     /// <summary>
@@ -46,7 +44,6 @@ public class OxiCleanarrController : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Success response.</returns>
     [HttpPost("symlinks/add")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -97,7 +94,6 @@ public class OxiCleanarrController : ControllerBase
     /// <param name="request">The request containing symlink paths to remove.</param>
     /// <returns>Success response.</returns>
     [HttpPost("symlinks/remove")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -141,7 +137,6 @@ public class OxiCleanarrController : ControllerBase
     /// <param name="directory">The directory to list symlinks from.</param>
     /// <returns>List of symlinks.</returns>
     [HttpGet("symlinks/list")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

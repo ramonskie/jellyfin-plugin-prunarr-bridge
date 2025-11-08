@@ -1,0 +1,82 @@
+name: '🧪 Test Plugin'
+
+on:
+  push:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**/*.md'
+      - 'images/**'
+      - 'tests/**'
+  pull_request:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**/*.md'
+      - 'images/**'
+      - 'tests/**'
+
+jobs:
+  test:
+    name: Test Plugin
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build plugin
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run code analysis
+        run: dotnet build --configuration Release --no-restore /warnaserror
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes --no-restore
+
+  build-test:
+    name: Build & Package Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install JPRM
+        run: pip install jprm
+
+      - name: Build plugin
+        run: dotnet build --configuration Release Jellyfin.Plugin.OxiCleanarr/Jellyfin.Plugin.OxiCleanarr.csproj
+
+      - name: Package with JPRM
+        run: jprm --verbosity=debug plugin build Jellyfin.Plugin.OxiCleanarr --output=artifacts --version=test
+
+      - name: Verify artifact exists
+        run: |
+          if [ ! -f artifacts/jellyfin-plugin-oxicleanarr_test.zip ]; then
+            echo "ERROR: Package artifact not created"
+            exit 1
+          fi
+          echo "Package created successfully"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jellyfin-plugin-oxicleanarr-test
+          path: artifacts/*.zip
