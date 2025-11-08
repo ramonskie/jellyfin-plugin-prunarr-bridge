@@ -29,7 +29,7 @@ Add the plugin repository to Jellyfin:
 2. Click **"+"** to add a repository
 3. Enter:
    - **Repository Name**: `OxiCleanarr Plugin Repository`
-   - **Repository URL**: `https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json`
+   - **Repository URL**: `https://cdn.jsdelivr.net/gh/ramonskie/jellyfin-plugin-oxicleanarr@main/manifest.json`
 4. Click **Save**
 5. Go to **Dashboard** → **Plugins** → **Catalog**
 6. Find "OxiCleanarr Bridge" and click **Install**
@@ -62,7 +62,7 @@ The plugin follows the **Single Responsibility Principle**:
 ```bash
 # 1. Add plugin repository to Jellyfin
 # Dashboard → Plugins → Repositories → Add
-# URL: https://raw.githubusercontent.com/YOUR_USERNAME/jellyfin-plugin-oxicleanarr-bridge/main/manifest.json
+# URL: https://cdn.jsdelivr.net/gh/ramonskie/jellyfin-plugin-oxicleanarr@main/manifest.json
 
 # 2. Install plugin from catalog
 # Dashboard → Plugins → Catalog → Find "OxiCleanarr Bridge" → Install
