@@ -70,7 +70,7 @@ public class OxiCleanarrController : ControllerBase
                     item.SourcePath,
                     item.TargetDirectory,
                     cancellationToken);
-                
+
                 createdSymlinks.Add(symlinkPath);
             }
             catch (Exception ex)

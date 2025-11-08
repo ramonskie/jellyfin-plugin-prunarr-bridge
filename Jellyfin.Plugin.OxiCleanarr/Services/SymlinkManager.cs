@@ -33,8 +33,9 @@ public class SymlinkManager
     /// <param name="targetDirectory">The target directory for the symlink.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The path to the created symlink.</returns>
-    public Task<string> CreateSymlinkAsync(string sourcePath, string targetDirectory, CancellationToken cancellationToken)
+    public Task<string> CreateSymlinkAsync(string sourcePath, string targetDirectory, CancellationToken cancellationToken = default)
     {
+        _ = cancellationToken; // Reserved for future use
         if (!File.Exists(sourcePath))
         {
             throw new FileNotFoundException($"Source file not found: {sourcePath}");
@@ -101,7 +102,7 @@ public class SymlinkManager
         }
 
         _logger.LogInformation("Clearing symlinks in: {Directory}", directory);
-        
+
         var files = Directory.GetFiles(directory);
         foreach (var file in files)
         {
@@ -128,10 +129,10 @@ public class SymlinkManager
         }
 
         _logger.LogDebug("Listing symlinks in: {Directory}", directory);
-        
+
         var symlinks = new System.Collections.Generic.List<SymlinkInfo>();
         var files = Directory.GetFiles(directory);
-        
+
         foreach (var file in files)
         {
             var fileInfo = new FileInfo(file);
