@@ -192,7 +192,115 @@ else
     ls -lah "$LEAVING_SOON_DIR/" || echo "Directory is empty or doesn't exist"
 fi
 
-# Step 12: Manual verification
+# Step 12: Test directory management API
+echo ""
+echo "Step 12: Testing directory management API..."
+echo ""
+
+# Test 12a: Create directory
+print_info "Testing directory creation..."
+CREATE_DIR_RESPONSE=$(curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/directories/create" \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"directory\": \"/data/test-directory\"
+    }" || echo "FAILED")
+
+echo "$CREATE_DIR_RESPONSE"
+if echo "$CREATE_DIR_RESPONSE" | grep -q '"Success":true'; then
+    print_status "Directory creation endpoint working"
+    
+    # Verify directory exists in container
+    if docker exec jellyfin-test test -d /data/test-directory; then
+        print_status "Directory exists in container"
+    else
+        print_error "Directory not found in container"
+    fi
+else
+    print_error "Directory creation failed"
+fi
+
+# Test 12b: Create directory again (idempotence test)
+echo ""
+print_info "Testing directory creation idempotence..."
+CREATE_DIR_RESPONSE2=$(curl -s -X POST "$JELLYFIN_URL/api/oxicleanarr/directories/create" \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"directory\": \"/data/test-directory\"
+    }" || echo "FAILED")
+
+if echo "$CREATE_DIR_RESPONSE2" | grep -q '"Created":false'; then
+    print_status "Correctly reported directory already exists"
+else
+    print_error "Should have reported Created: false"
+fi
+
+# Test 12c: Remove empty directory
+echo ""
+print_info "Testing empty directory removal..."
+REMOVE_DIR_RESPONSE=$(curl -s -X DELETE "$JELLYFIN_URL/api/oxicleanarr/directories/remove" \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"directory\": \"/data/test-directory\",
+        \"force\": false
+    }" || echo "FAILED")
+
+echo "$REMOVE_DIR_RESPONSE"
+if echo "$REMOVE_DIR_RESPONSE" | grep -q '"Success":true'; then
+    print_status "Directory removal endpoint working"
+    
+    # Verify directory was removed
+    if ! docker exec jellyfin-test test -d /data/test-directory; then
+        print_status "Directory successfully removed from container"
+    else
+        print_error "Directory still exists in container"
+    fi
+else
+    print_error "Directory removal failed"
+fi
+
+# Test 12d: Test force removal with non-empty directory
+echo ""
+print_info "Testing force removal of non-empty directory..."
+
+# Create directory and add a file
+docker exec jellyfin-test mkdir -p /data/test-nonempty
+docker exec jellyfin-test touch /data/test-nonempty/test-file.txt
+
+# Try to remove without force (should fail)
+REMOVE_NO_FORCE=$(curl -s -X DELETE "$JELLYFIN_URL/api/oxicleanarr/directories/remove" \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"directory\": \"/data/test-nonempty\",
+        \"force\": false
+    }" || echo "FAILED")
+
+if echo "$REMOVE_NO_FORCE" | grep -q "error"; then
+    print_status "Correctly rejected removal of non-empty directory"
+else
+    print_error "Should have rejected removal of non-empty directory"
+fi
+
+# Remove with force (should succeed)
+REMOVE_WITH_FORCE=$(curl -s -X DELETE "$JELLYFIN_URL/api/oxicleanarr/directories/remove" \
+    -H "Content-Type: application/json" \
+    -d "{
+        \"directory\": \"/data/test-nonempty\",
+        \"force\": true
+    }" || echo "FAILED")
+
+if echo "$REMOVE_WITH_FORCE" | grep -q '"Success":true'; then
+    print_status "Force removal succeeded"
+    
+    if ! docker exec jellyfin-test test -d /data/test-nonempty; then
+        print_status "Non-empty directory successfully removed"
+    else
+        print_error "Directory still exists after force removal"
+    fi
+else
+    print_error "Force removal failed"
+fi
+
+# Step 13: Manual verification
 echo ""
 echo "=========================================="
 echo "Test Complete - Manual Verification"
