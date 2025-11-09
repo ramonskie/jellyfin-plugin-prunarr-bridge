@@ -202,7 +202,17 @@ List all symlinks in a specified directory.
       "Name": "movie.mkv"
     }
   ],
-  "Count": 1
+  "Count": 1,
+  "Message": "Found 1 symlink(s)"
+}
+```
+
+**Response (empty directory):**
+```json
+{
+  "Symlinks": [],
+  "Count": 0,
+  "Message": "No symlinks found in directory"
 }
 ```
 

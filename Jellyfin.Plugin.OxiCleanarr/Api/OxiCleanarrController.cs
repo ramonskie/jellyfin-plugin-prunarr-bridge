@@ -156,7 +156,10 @@ public class OxiCleanarrController : ControllerBase
             return Ok(new ListSymlinksResponse
             {
                 Symlinks = symlinks,
-                Count = symlinks.Length
+                Count = symlinks.Length,
+                Message = symlinks.Length == 0 
+                    ? "No symlinks found in directory" 
+                    : $"Found {symlinks.Length} symlink(s)"
             });
         }
         catch (Exception ex)
@@ -376,6 +379,11 @@ public class ListSymlinksResponse
     /// Gets or sets the count of symlinks.
     /// </summary>
     public int Count { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message describing the result.
+    /// </summary>
+    public string Message { get; set; } = string.Empty;
 }
 
 /// <summary>
