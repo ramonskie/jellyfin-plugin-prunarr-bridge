@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,13 +154,22 @@ public class OxiCleanarrController : ControllerBase
         try
         {
             var symlinks = _symlinkManager.ListSymlinks(directory);
+            string message;
+            if (symlinks.Length == 0)
+            {
+                message = "No symlinks found in directory";
+            }
+            else
+            {
+                var symlinkNames = string.Join(", ", symlinks.Select(s => s.Name));
+                message = $"Found {symlinks.Length} symlink(s): {symlinkNames}";
+            }
+
             return Ok(new ListSymlinksResponse
             {
                 Symlinks = symlinks,
                 Count = symlinks.Length,
-                Message = symlinks.Length == 0 
-                    ? "No symlinks found in directory" 
-                    : $"Found {symlinks.Length} symlink(s)"
+                Message = message
             });
         }
         catch (Exception ex)

@@ -203,7 +203,16 @@ List all symlinks in a specified directory.
     }
   ],
   "Count": 1,
-  "Message": "Found 1 symlink(s)"
+  "Message": "Found 1 symlink(s): movie.mkv"
+}
+```
+
+**Response (multiple symlinks):**
+```json
+{
+  "Symlinks": [...],
+  "Count": 3,
+  "Message": "Found 3 symlink(s): movie1.mkv, movie2.mkv, movie3.mkv"
 }
 ```
 
