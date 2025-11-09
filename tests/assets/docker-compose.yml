@@ -7,13 +7,15 @@ services:
     environment:
       - TZ=UTC
     volumes:
-      - ./jellyfin-config:/config:Z
-      - ./jellyfin-cache:/cache:Z
+      - ./jellyfin-config:/config:z
+      - ./jellyfin-cache:/cache:z
       # Test media
-      - ./test-media/movies:/media/movies:ro,Z
+      - ./test-media/movies:/media/movies:ro,z
       # Shared volume for "Leaving Soon" symlinks
-      - ./leaving-soon-data:/data/leaving-soon:Z
+      - ./leaving-soon-data:/data/leaving-soon:z
     ports:
       - "8096:8096"
-    user: "${UID:-1000}:${GID:-1000}"
     restart: unless-stopped
+
+volumes:
+  leaving-soon-data:
