@@ -73,6 +73,7 @@ public class OxiCleanarrController : ControllerBase
                     cancellationToken);
 
                 createdSymlinks.Add(symlinkPath);
+                _logger.LogInformation("Successfully created symlink: {SymlinkPath} -> {SourcePath}", symlinkPath, item.SourcePath);
             }
             catch (Exception ex)
             {
@@ -80,6 +81,8 @@ public class OxiCleanarrController : ControllerBase
                 errors.Add($"{item.SourcePath}: {ex.Message}");
             }
         }
+
+        _logger.LogInformation("Completed symlink creation: {SuccessCount} succeeded, {ErrorCount} failed", createdSymlinks.Count, errors.Count);
 
         return Ok(new AddItemsResponse
         {
@@ -116,6 +119,7 @@ public class OxiCleanarrController : ControllerBase
             {
                 _symlinkManager.RemoveSymlink(path);
                 removed.Add(path);
+                _logger.LogInformation("Successfully removed symlink: {Path}", path);
             }
             catch (Exception ex)
             {
@@ -123,6 +127,8 @@ public class OxiCleanarrController : ControllerBase
                 errors.Add($"{path}: {ex.Message}");
             }
         }
+
+        _logger.LogInformation("Completed symlink removal: {SuccessCount} succeeded, {ErrorCount} failed", removed.Count, errors.Count);
 
         return Ok(new RemoveItemsResponse
         {
@@ -159,6 +165,8 @@ public class OxiCleanarrController : ControllerBase
                 ? "No symlinks found in directory" 
                 : $"Found {symlinks.Length} symlink(s)";
 
+            _logger.LogInformation("Successfully listed symlinks in {Directory}: {Count} symlink(s) found", directory, symlinks.Length);
+
             return Ok(new ListSymlinksResponse
             {
                 Symlinks = symlinks,
@@ -169,7 +177,7 @@ public class OxiCleanarrController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to list symlinks");
+            _logger.LogError(ex, "Failed to list symlinks in directory: {Directory}", directory);
             return StatusCode(500, new { error = ex.Message });
         }
     }
@@ -196,12 +204,14 @@ public class OxiCleanarrController : ControllerBase
         try
         {
             var created = _symlinkManager.EnsureDirectoryExists(request.Directory);
+            var message = created ? "Directory created successfully" : "Directory already exists";
+            _logger.LogInformation("Successfully processed directory creation for {Directory}: {Message}", request.Directory, message);
             return Ok(new CreateDirectoryResponse
             {
                 Success = true,
                 Directory = request.Directory,
                 Created = created,
-                Message = created ? "Directory created successfully" : "Directory already exists"
+                Message = message
             });
         }
         catch (Exception ex)
@@ -233,6 +243,7 @@ public class OxiCleanarrController : ControllerBase
         try
         {
             _symlinkManager.RemoveDirectory(request.Directory, request.Force);
+            _logger.LogInformation("Successfully removed directory: {Directory} (force={Force})", request.Directory, request.Force);
             return Ok(new RemoveDirectoryResponse
             {
                 Success = true,

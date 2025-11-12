@@ -46,6 +46,7 @@ public class SymlinkManager
 
         _logger.LogInformation("Creating directory: {Directory}", directoryPath);
         Directory.CreateDirectory(directoryPath);
+        _logger.LogInformation("Successfully created directory: {Directory}", directoryPath);
         return true;
     }
 
@@ -83,10 +84,11 @@ public class SymlinkManager
         try
         {
             File.CreateSymbolicLink(symlinkPath, sourcePath);
+            _logger.LogInformation("Successfully created symlink: {SymlinkPath} pointing to {SourcePath}", symlinkPath, sourcePath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create symlink");
+            _logger.LogError(ex, "Failed to create symlink from {SourcePath} to {SymlinkPath}", sourcePath, symlinkPath);
             throw;
         }
 
@@ -107,6 +109,7 @@ public class SymlinkManager
 
         _logger.LogInformation("Removing symlink: {Path}", symlinkPath);
         File.Delete(symlinkPath);
+        _logger.LogInformation("Successfully removed symlink: {Path}", symlinkPath);
     }
 
     /// <summary>
@@ -140,6 +143,7 @@ public class SymlinkManager
 
         _logger.LogInformation("Removing directory: {Directory} (force={Force}, hasContent={HasContent})", directoryPath, force, hasContent);
         Directory.Delete(directoryPath, recursive: force);
+        _logger.LogInformation("Successfully removed directory: {Directory}", directoryPath);
     }
 
     /// <summary>
@@ -157,15 +161,19 @@ public class SymlinkManager
         _logger.LogInformation("Clearing symlinks in: {Directory}", directory);
 
         var files = Directory.GetFiles(directory);
+        int removedCount = 0;
         foreach (var file in files)
         {
             var fileInfo = new FileInfo(file);
             if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
             {
                 File.Delete(file);
+                removedCount++;
                 _logger.LogDebug("Removed symlink: {File}", file);
             }
         }
+        
+        _logger.LogInformation("Successfully cleared {Count} symlink(s) from directory: {Directory}", removedCount, directory);
     }
 
     /// <summary>
@@ -208,6 +216,7 @@ public class SymlinkManager
             }
         }
 
+        _logger.LogInformation("Found {Count} symlink(s) in directory: {Directory}", symlinks.Count, directory);
         return symlinks.ToArray();
     }
 }
