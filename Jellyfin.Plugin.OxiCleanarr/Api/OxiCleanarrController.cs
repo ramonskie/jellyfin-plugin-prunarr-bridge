@@ -161,8 +161,8 @@ public class OxiCleanarrController : ControllerBase
         {
             var symlinks = _symlinkManager.ListSymlinks(directory);
             var symlinkNames = symlinks.Select(s => s.Name).ToArray();
-            string message = symlinks.Length == 0 
-                ? "No symlinks found in directory" 
+            string message = symlinks.Length == 0
+                ? "No symlinks found in directory"
                 : $"Found {symlinks.Length} symlink(s)";
 
             _logger.LogInformation("Successfully listed symlinks in {Directory}: {Count} symlink(s) found", directory, symlinks.Length);

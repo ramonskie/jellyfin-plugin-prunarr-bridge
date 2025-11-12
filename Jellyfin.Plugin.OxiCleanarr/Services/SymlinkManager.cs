@@ -172,7 +172,7 @@ public class SymlinkManager
                 _logger.LogDebug("Removed symlink: {File}", file);
             }
         }
-        
+
         _logger.LogInformation("Successfully cleared {Count} symlink(s) from directory: {Directory}", removedCount, directory);
     }
 
